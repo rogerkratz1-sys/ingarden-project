@@ -1,4 +1,4 @@
-﻿name: CI
+name: CI
 on: [push, pull_request]
 jobs:
   test:
@@ -18,6 +18,54 @@ jobs:
 
       - name: Set up Python
         uses: actions/setup-python@v4
+- name: Show repo tree and debug
+  shell: bash
+  run: |
+    set -euxo pipefail
+    echo "Working directory: $(pwd)"
+    echo "Top-level files:"
+    ls -la
+    echo "Scripts folder:"
+    ls -la scripts || true
+    echo "Show script head:"
+    sed -n '1,200p' scripts/run_example_repro.py || true
+
+- name: Install dependencies
+  shell: bash
+  run: |
+    set -euxo pipefail
+    python -m pip install --upgrade pip
+    if [ -f requirements.txt ]; then pip install -r requirements.txt; else echo "No requirements.txt"; fi
+
+- name: Run example (verbose)
+  shell: bash
+  run: |
+    set -euxo pipefail
+    python -u scripts/run_example_repro.py --input data/motif_stability_summary.csv --outdir outputs
+  - name: Show repo tree and debug
+    shell: bash
+    run: |
+      set -euxo pipefail
+      echo "Working directory: $(pwd)"
+      echo "Top-level files:"
+      ls -la
+      echo "Scripts folder:"
+      ls -la scripts || true
+      echo "Show script head:"
+      sed -n '1,200p' scripts/run_example_repro.py || true
+
+  - name: Install dependencies
+    shell: bash
+    run: |
+      set -euxo pipefail
+      python -m pip install --upgrade pip
+      if [ -f requirements.txt ]; then pip install -r requirements.txt; else echo "No requirements.txt"; fi
+
+  - name: Run example (verbose)
+    shell: bash
+    run: |
+      set -euxo pipefail
+      python -u scripts/run_example_repro.py --input data/motif_stability_summary.csv --outdir outputs
         with:
           python-version: '3.10'
 
@@ -68,3 +116,4 @@ jobs:
   run: |
     set -euxo pipefail
     python -u scripts/run_example_repro.py --input data/motif_stability_summary.csv --outdir outputs
+
