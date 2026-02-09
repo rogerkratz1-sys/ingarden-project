@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use this software or data, please cite:"
+title: "Ingarden Project — Reproducibility Package"
+version: "v1.0"
+date-released: "2026-02-08"
+authors:
+  - family-names: "Kratz"
+    given-names: "Roger"
+    affiliation: "Independent Researcher"
+    orcid: ""
+abstract: "Repository containing the artifacts, example data, and scripts to reproduce analyses and figures referenced in the paper and supplements. Large data assets are documented in MANIFEST.csv and may be provided as release assets."
+keywords:
+  - reproducibility
+  - data
+  - analysis
+  - motifs
+  - stability
+repository-code: "https://github.com/<your-org-or-username>/<repo-name>"
+license: "MIT (code); CC-BY 4.0 (data)"

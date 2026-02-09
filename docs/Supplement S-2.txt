@@ -1,0 +1,175 @@
+SUPPLEMENT S2 — Exemplar Diagnostics and Pilot Reader Ratings 
+
+A. PerExemplar Diagnostics
+This supplement provides the diagnostics used for the exemplar analyses in Section?4.5 of the main paper.  The file supplement/diagnostics_per_exemplar.csv contains, for each exemplar:
+* permutation vector
+* coverviolation count
+* Kendall ? (when defined)
+* anchorpreservation flag
+* stability_fraction
+* structural_metric
+* short interpretive notes
+The Other motif is represented by two exemplars to reflect its heterogeneity:
+* Other (less incoherent)
+* Other (more incoherent, GDlike)
+
+B. Pilot Reader Ratings
+A synthetic demonstration dataset is provided in supplement/reader_ratings_sample_all6.csv.
+Each reader rates all six exemplars of the Ten Virgins parable on a 1–7 coherence scale and indicates whether the main causal anchors are preserved.
+Raw responses are stored in the CSV.
+Aggregated summaries appear in supplement/reader_ratings_summary.csv.
+
+C. Analysis Summary
+We computed:
+* mean_rating
+* sd_rating
+* number of readers
+* anchor_preservation_rate
+and merged these with the exemplar diagnostics.
+Spearman correlations (pilot demonstration):
+* mean_rating vs structural_metric: ? = –0.657 (p = 0.156)
+* mean_rating vs cover_violations: ? = –0.829 (p = 0.0416)
+Interpretation:
+Higher structural incoherence corresponds to lower perceived coherence.
+In this pilot, coverviolation counts tracked perceived incoherence more closely than the hybrid structural metric.
+
+D. Comparison of Structural vs Perceptual Ordering (TextOnly)
+Exemplar: BRE
+Label: BRE
+Structural metric: 0.10
+Metric rank: 1
+Mean rating: 6.50
+Perceptual rank: 1
+Discordant with metric: no
+------------------------------------------------------------
+
+Exemplar: Other_low
+Label: Other (less incoherent)
+Structural metric: 0.35
+Metric rank: 2
+Mean rating: 4.00
+Perceptual rank: 5
+Discordant with metric: yes
+------------------------------------------------------------
+
+Exemplar: FM_EM
+Label: FM/EM
+Structural metric: 0.40
+Metric rank: 3
+Mean rating: 5.50
+Perceptual rank: 2
+Discordant with metric: yes
+------------------------------------------------------------
+
+Exemplar: APD
+Label: APD
+Structural metric: 0.60
+Metric rank: 4
+Mean rating: 5.00
+Perceptual rank: 3
+Discordant with metric: yes
+------------------------------------------------------------
+
+Exemplar: DCO
+Label: DCO
+Structural metric: 0.75
+Metric rank: 5
+Mean rating: 4.50
+Perceptual rank: 4
+Discordant with metric: yes
+------------------------------------------------------------
+
+Exemplar: Other_high
+Label: Other (more incoherent, GD-like)
+Structural metric: 0.85
+Metric rank: 6
+Mean rating: 2.00
+Perceptual rank: 6
+Discordant with metric: no
+------------------------------------------------------------
+Table S-1. Comparison of structural and perceptionbased exemplar rankings. Structural metric orders exemplars by structural_metric ascending (1 = least incoherent). Perceptual rank orders by mean reader coherence rating descending (1 = least incoherent). Discordant with metric flags exemplars whose metric and perceptual ranks differ.  This comparison highlights where structural and perceptual rankings diverge.
+
+E. Files Included
+supplement/diagnostics_per_exemplar.csv
+supplement/reader_ratings_sample_all6.csv
+supplement/reader_ratings_summary.csv
+supplement/diagnostics_summary.csv
+supplement/comparison_table.csv
+supplement/plots/onepanel_figure.png
+supplement/plots/rating_vs_structural_metric.png
+supplement/supplement_section_for_word.txt
+
+F. Note on OtherClass Heterogeneity
+The Other motif is a residual, heterogeneous category spanning a wide range of structural disruptions.
+For transparency, we include two representative exemplars:
+* Other (less incoherent)
+* Other (more incoherent, GDlike)
+These are reported separately so readers can compare structural and perceptual patterns.
+
+G. Script: Analysis Pipeline for Exemplar Diagnostics and ReaderRating Aggregation
+The following script (Python 3) reads the summary CSV and produces a onepanel figure.
+It uses only standard scientific Python packages.
+#!/usr/bin/env python3
+
+# make_onepanel_figure.py
+# Reads supplement/reader_ratings_summary.csv
+# Writes supplement/plots/onepanel_figure.png (300 DPI)
+
+import os
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+OUTDIR = "supplement"
+PLOTS_DIR = os.path.join(OUTDIR, "plots")
+os.makedirs(PLOTS_DIR, exist_ok=True)
+
+INPUT_CSV = os.path.join(OUTDIR, "reader_ratings_summary.csv")
+OUTPUT_PNG = os.path.join(PLOTS_DIR, "onepanel_figure.png")
+
+width_in = 6.5
+height_in = 4.0
+dpi = 300
+
+df = pd.read_csv(INPUT_CSV)
+
+ycol = "display_label" if "display_label" in df.columns else "exemplar_id"
+
+plot_df = df.sort_values("mean_rating", ascending=False)
+
+sns.set(style="whitegrid", context="paper", font_scale=1.0)
+plt.figure(figsize=(width_in, height_in), dpi=dpi)
+
+bar = sns.barplot(
+    x="mean_rating",
+    y=ycol,
+    data=plot_df,
+    color="#4c72b0",
+    edgecolor="black"
+)
+
+plt.xlabel("Mean coherence rating (1 = least coherent, 7 = most coherent)")
+plt.xlim(0.5, 7.0)
+plt.title("Mean reader coherence rating by exemplar")
+plt.tight_layout()
+
+for p in bar.patches:
+    width = p.get_width()
+    bar.annotate(
+        f"{width:.2f}",
+        (width + 0.05, p.get_y() + p.get_height() / 2),
+        va="center",
+        fontsize=8
+    )
+
+plt.savefig(OUTPUT_PNG, dpi=dpi, bbox_inches="tight")
+plt.close()
+
+print("Saved:", OUTPUT_PNG)
+How to run
+python -m pip install pandas seaborn matplotlib
+python make_onepanel_figure.py
+Output:
+supplement/plots/onepanel_figure.png (6.5 × 4.0 in, 300 DPI)
+
+

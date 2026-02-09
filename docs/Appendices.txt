@@ -1,0 +1,409 @@
+Appendices: Full Supplementary Materials
+
+This folder contains the full Appendices A–G referenced in the paper and the data files used to generate the results. Toplevel files include:
+* manifest.csv — canonical file list and short descriptions (use this to find exact script names and file locations).
+* Appendix_A … Appendix_G — appendix documents.
+* outputs_appendix_D/appendix_d_outliers_refined.csv — full outlier classification table referenced in Appendix D.
+* supplement/artifacts/stability_tests/ — example stability outputs (bootstrap samples, summary, and plots) produced by the stability test script.
+Reproducibility (example commands)
+The repository contains several stability and robustness scripts. Example commands to reproduce the demonstration stability runs used in the paper are:
+# Bootstrap rankstability test (produces stability_bootstrap_samples.csv, stability_summary.csv, and plots)
+python ./run_randomized_stability_tests.py
+
+# If your workflow uses a coverbased stability check, consult manifest.csv for the exact script name and run it.
+# Example candidate (check manifest.csv for exact flags and location):
+# python ./adjacency_stability_by_cover.py --n_orders 500 --seed 42
+Notes
+* The original paper text referenced run_randomized_cover_checks.py and run_stability_bootstrap.py. If those exact filenames are required for reproducibility, see manifest.csv for their current repository locations or equivalent scripts.
+* For reproducibility, the repository includes run_manifest.json (or should — see manifest.csv) that records the git commit, thresholds/weights files, and run timestamp used to generate the outputs. See the provenance column in appendix_d_outliers_refined.csv for perrow provenance.
+* To change bootstrap sample size or RNG seed, either edit the script constants or use the parameterized wrapper (see scripts/); a nondestructive wrapper can be provided to run with --n_boot and --seed without modifying the original script.
+
+Appendix A — Robustness to Event Segmentation
+This appendix evaluates robustness under three segmentations: canonical (12 events), Parse A (13 events), Parse B (11 events).
+A.1 Motivation
+Segmentation affects the poset and permutation space. We test whether motif identity is stable.
+
+A.2 Cohesion Features
+Cohesion features (connectives) are invariant across segmentations.
+
+A.3 Displacement Features
+Displacement features shift predictably with granularity but do not alter motif identity.
+
+A.4 Motif Stability
+BRE, APD, FM/EM, DCO, GD remain stable across segmentations.
+Other splits into subclusters but remains structurally consistent.
+
+A.5 Segmentation Vectors (TextOnly)
+All three segmentation vectors are included exactly as plain text (canonical, Parse A, Parse B).
+Posets for each segmentation are listed in text form.
+
+A.6 Summary
+Motifs are segmentationinvariant. Geometry shifts; structure does not.
+
+Appendix B — Feature Definitions, Weights, and Sensitivity Analysis
+This appendix provides formal definitions, computational notes, and robustness checks for all structural features used in score_dir and related coherence metrics. These features quantify structural disruptions relative to the canonical narrative order and form the basis of the weighted scoring system described in Section?3 of the main text.
+B.1 Feature Definitions
+All features are defined mathematically and implemented deterministically. Examples refer to the Ten Virgins parable (12 events).
+B.1.1 speech_gap
+Counts disruptions of speaker continuity.
+Definition:
+speech_gap(pi) = number of pairs (i, j) such that i < j, speaker(i) = speaker(j), and the positions of i and j in permutation pi differ by more than 1.
+Interpretation:
+Higher values indicate broken conversational flow.
+B.1.2 scene_span
+Measures how widely each scene is dispersed.
+For each scene s:
+span(s) = max position of events in s – min position of events in s.
+Then:
+scene_span(pi) = sum over all scenes of span(s).
+Interpretation:
+Large spans indicate fragmentation of narrative units.
+B.1.3 span_excess
+Measures how much each scene’s span exceeds its canonical compactness.
+Definition:
+span_excess(pi) = sum over scenes s of max(0, span(s) – canonical_span(s)).
+Interpretation:
+Penalizes unnecessary scattering.
+B.1.4 disp_sum
+Total absolute displacement from canonical positions.
+Definition:
+disp_sum(pi) = sum_i |position_i(pi) – position_i(canonical)|.
+Interpretation:
+A coarse measure of global scrambling.
+B.1.5 disp_excess
+Displacement beyond a tolerance window.
+Definition:
+disp_excess(pi) = sum_i max(0, |position_i(pi) – position_i(canonical)| – w)
+with default window w = 3.
+Interpretation:
+Distinguishes mild reordering from deep disruption.
+B.1.6 temporal_violations
+Counts violations of canonical temporal order.
+Definition:
+temporal_violations(pi) = number of pairs (i, j) with i < j but position_i(pi) > position_j(pi).
+Interpretation:
+Equivalent to Kendall inversions restricted to temporal edges.
+
+B.2 Default Weight Table
+Default weights (stored in weights.json):
+speech_gap: 10
+scene_span: 5
+span_excess: 5
+disp_sum: 2
+disp_excess: 2
+temporal_violations: 500
+Interpretation:
+Weights reflect preregistered assumptions about severity. Temporal violations receive the largest penalty because they represent the strongest departures from coherent narrative order.
+
+B.3 Sensitivity Grid and Robustness Checks
+We conducted a preregistered ±20% sensitivity analysis:
+1. Each weight was perturbed independently by ±20%.
+2. For each perturbed weight vector, score_dir was recomputed for all permutations.
+3. Spearman rank correlations between perturbed and default scores were computed.
+Result:
+All correlations exceeded 0.95, demonstrating that score_dir is not dominated by any single feature.
+Bootstrap resampling of permutations confirmed stable median contributions for all features with narrow 95% confidence intervals.
+
+B.4 Worked Examples (Condensed)
+* Local swap: Adjacent swap increases disp_sum but leaves scene_span unchanged.
+* Scene fragmentation: Moving event 5 far from 6 increases both scene_span and span_excess.
+* Temporal inversion: Reversing events 1–3 sharply increases temporal_violations.
+* GDlike scrambling: Extreme permutations show large disp_excess and many temporal violations.
+These examples illustrate how the scoring system decomposes structural disruptions and why motif classes differ systematically.
+
+Appendix C — MDS and Nyström Technical Details
+This appendix provides the mathematical and computational details of the embedding pipeline.
+C.1 Classical MDS and DoubleCentering
+Given dissimilarity matrix D:
+B = –1/2 * J * (D^2) * J
+J = I – (1/n) * 11^T
+Eigenpairs of B yield coordinates.
+
+C.2 Eigenpair Selection
+Criteria:
+* positive eigenvalues
+* ?90% cumulative variance
+* meaningful stress reduction
+Motivates 3D embedding.
+
+C.3 Nyström OutofSample Projection
+For new item x:
+x* = –1/2 * ?_d^{-1/2} * V_d^T * (D_xL^2 – row_mean – col_mean + grand_mean)
+Ensures consistency with landmark embedding.
+
+C.4 Rotational Alignment
+Canonical permutation is aligned with the positive yaxis using orthonormal Procrustes rotation.
+
+C.5 Stress Comparison
+Stress1:
+Stress = sqrt( sum (d_MDS – D)^2 / sum D^2 )
+3D embedding reduces stress substantially relative to 2D.
+
+C.6 Targeted Landmark Augmentation (Moved from Main Text)
+To reduce the heavy tail of perpoint stress:
+1. Identify top 50, then top 100 higheststress points.
+2. Add their 20 nearest neighbors (by original D) to the landmark set.
+3. Rerun landmark SMACOF, OOS fits, and global refinement.
+This improved global rank preservation from 0.8348 to 0.8432.
+
+Appendix D — Outlier Taxonomy (Full Classification Table)
+The complete perpermutation classification table used to construct and validate the outlier taxonomy described in Section 4.6 is provided as a CSV file in the project repository: outputs_appendix_D/appendix_d_outliers_refined.csv. Each row records the permutation index and permutation string, the assigned motif class, the normalized Kendall distance, the scaled ? displacement, the embedding distortion (? stress), the embedding radius, short structuralanomaly notes, and provenance metadata. This table provides a transparent, reproducible record of how outliers were evaluated and assigned and can be used to reproduce the summary statistics and figures reported in Section 4.6.
+
+
+Appendix E — Algorithmic and Implementation Details
+This appendix documents the metrics, decision rules, and implementation choices used by the motif assignment pipeline. It is written so a reader can reproduce the behavior from the repository and understand the rationale for recent robustness fixes (BOM handling and canonical key normalization).
+
+E.1 Base Metrics
+Purpose
+Define the core, orderinvariant features used to detect motifs in permutations and give compact formulas and interpretation for each metric.
+Normalized Kendall distance
+* Definition: normalized count of pairwise inversions between permutation (\pi) and canonical ordering (p_{\text{canon}}).
+* Formula:
+[ d_K(\pi, p_{\text{canon}}) = \frac{#{(i,j): i<j,\ \text{pos}\pi(i)>\text{pos}\pi(j)\ \text{relative to }p_{\text{canon}}}}{n(n-1)/2} ] where (n) is the number of events and (\text{pos}_\pi(\cdot)) maps event ? position in (\pi).
+* Interpretation: 0 = identical order; 1 = fully inverted.
+? weighted scaled displacement
+* Definition: displacement metric that weights positional differences and scales by a tunable parameter (\kappa) and exponent (\alpha).
+* Formula (conceptual):
+[ \text{disp}\kappa(\pi) = \frac{1}{n}\sum{e} \kappa^{-\alpha\cdot|\text{pos}\pi(e)-p{\text{canon}}(e)|}\cdot |\text{pos}\pi(e)-p{\text{canon}}(e)| ]
+* Interpretation: emphasizes large displacements when (\kappa) and (\alpha) are tuned; used to separate global disorder from local swaps.
+Anchor preservation
+* Definition: fraction of canonical anchor events that remain within a radius (r) of their canonical positions in (\pi).
+* Formula:
+[ \text{anchor_pres} = \frac{1}{|\mathcal{A}|}\sum_{a\in\mathcal{A}} \mathbf{1}{|\text{pos}\pi(a)-p{\text{canon}}(a)| \le r} ] where (\mathcal{A}) is the anchor set.
+* Interpretation: measures how well anchor events preserve their canonical locality.
+Max block move
+* Definition: size (number of elements) of the largest contiguous block in (\pi) that has been moved as a unit relative to canonical order.
+* Interpretation: large values indicate block relocations (block reordering events).
+Single element move
+* Definition: indicator or score for whether the permutation can be explained by moving a single element from its canonical position to another position (or vice versa).
+* Interpretation: distinguishes singleelement perturbations from block or global reordering.
+Order dual proximity
+* Definition: Kendall distance between (\pi) and the reverse of the canonical ordering.
+* Interpretation: low values indicate the permutation is close to the canonical reverse (useful for detecting reversed sequences).
+score_dir
+* Definition: a weighted linear combination of selected features (weights stored in weights.json) producing a directional score used in some motif rules.
+* Formula:
+[ \text{score_dir}(\pi) = \sum_{f} w_f \cdot \text{feature}_f(\pi) ]
+* Interpretation: tunable scoring function to bias detection toward particular motif signatures.
+E.1 Worked example
+Scenario: (n=6), canonical positions (p_{\text{canon}} = [1,2,3,4,5,6]). Permutation (\pi = [1,3,2,4,6,5]).
+* Kendall: one inversion pair (2,3) and one (5,6) ? 2 inversions; normalized (d_K = 2 / (6\cdot5/2) = 2/15 \approx 0.133).
+* Anchor preservation: if anchors = {1,4} and (r=0), both anchors preserved ? anchor_pres = 1.0.
+* Max block: no moved contiguous block larger than 1 ? max_block = 1.
+* Single element move: can be explained by two adjacent swaps; single_move = 0 (or low).
+This small example illustrates how the metrics separate local swaps from block or global reordering.
+E.1 Minimal code snippet
+# compute base features for a single permutation pi
+dk = kendall_distance(pi, p_canon)
+disp = disp_kappa_scaled(pi, kappa=TH['kappa'], alpha=TH['alpha'])
+anchor_pres = anchor_preservation(pi, anchors=TH['anchors'], r=TH['anchor_radius'])
+max_block = max_block_move(pi)
+single_move = single_element_move(pi)
+dual_prox = kendall_distance(pi, reverse_canonical_positions(p_canon))
+score = score_dir(pi, weights=TH.get('weights'))
+
+E.2 Motif assignment pseudocode and implementation notes
+Inputs
+* pi — permutation (list of event indices).
+* p_canon — canonical positions mapping (event ? canonical index).
+* TH — thresholds dictionary (JSON) containing tuning and motif thresholds (examples: kappa, alpha, anchors, anchor_radius, GD_dK, GD_disp, BRE_block, BRE_anchor, BRE_disp_min, APD_anchor, APD_dK_low, APD_dK_high, FMEM_single, DCO_dual, DCO_score, stability_threshold, and weights for score_dir).
+* Auxiliary functions — available in scripts/: kendall_distance, disp_kappa_scaled, anchor_preservation, max_block_move, single_element_move, reverse_canonical_positions, score_dir, stability_fraction.
+Outputs
+* multilabel_flags — list of order invariant motif flags (may contain multiple labels).
+* primary_label — single primary motif label chosen by precedence.
+* features — computed feature values for provenance.
+* adjudication_flag — boolean indicating whether the permutation should be exported for manual review.
+E.2 Motif assignment pseudocode
+def motif_assignment(pi, p_canon, TH):
+    """
+    Assign motif labels to a single permutation.
+
+    Returns a dict with:
+      - multilabel_flags: sorted list of flags
+      - primary_label: string
+      - features: dict of computed feature values
+      - adjudication_flag: bool
+    """
+
+    # 1. Compute base features
+    dk = kendall_distance(pi, p_canon)
+    disp = disp_kappa_scaled(pi, kappa=TH['kappa'], alpha=TH['alpha'])
+    anchor_pres = anchor_preservation(pi, anchors=TH['anchors'], r=TH['anchor_radius'])
+    max_block = max_block_move(pi)
+    single_move = single_element_move(pi)
+    dual_prox = kendall_distance(pi, reverse_canonical_positions(p_canon))
+    score = score_dir(pi, weights=TH.get('weights'))
+
+    # 2. Order-invariant multilabel flags
+    multilabel_flags = set()
+
+    if dk >= TH['GD_dK'] and disp >= TH['GD_disp']:
+        multilabel_flags.add('GD')
+
+    if max_block >= TH['BRE_block'] and anchor_pres >= TH['BRE_anchor'] and disp >= TH['BRE_disp_min']:
+        multilabel_flags.add('BRE')
+
+    if anchor_pres >= TH['APD_anchor'] and TH['APD_dK_low'] <= dk <= TH['APD_dK_high']:
+        multilabel_flags.add('APD')
+
+    if single_move >= TH['FMEM_single'] and max_block < TH['BRE_block']:
+        multilabel_flags.add('FM/EM')
+
+    if dual_prox <= TH['DCO_dual'] and score <= TH['DCO_score']:
+        multilabel_flags.add('DCO')
+
+    # 3. Primary label by precedence
+    precedence = ['GD', 'FM/EM', 'BRE', 'DCO', 'APD', 'Other']
+    primary_label = 'Other'
+    for label in precedence:
+        if label in multilabel_flags:
+            primary_label = label
+            break
+
+    # 4. Adjudication hook
+    adjudication_flag = False
+    if len(multilabel_flags) > 1:
+        adjudication_flag = True
+    elif stability_fraction(pi) < TH.get('stability_threshold', 0.8):
+        adjudication_flag = True
+
+    # 5. Package outputs
+    return {
+        'multilabel_flags': sorted(list(multilabel_flags)),
+        'primary_label': primary_label,
+        'features': {
+            'dk': dk,
+            'disp': disp,
+            'anchor_pres': anchor_pres,
+            'max_block': max_block,
+            'single_move': single_move,
+            'dual_prox': dual_prox,
+            'score_dir': score
+        },
+        'adjudication_flag': adjudication_flag
+    }
+
+E.2 Implementation notes
+Determinism
+* All feature computations are deterministic. Numeric precision and any RNG seeds (if used by auxiliary utilities) are recorded in CSV headers and the run manifest.
+Thresholds and weights
+* Store motif thresholds and weights in versioned JSON files (thresholds.json, weights.json). The pipeline reads TH at runtime so experiments are reproducible.
+Batch processing
+* Apply motif_assignment across permutations to produce order_invariant_multilabel_flags.csv and labels_per_perm.csv. Export adjudication candidates where adjudication_flag == True to adjudication_candidates.csv.
+Adjudication workflow
+* The adjudication CSV includes perm_index, multilabel_flags, primary_label, features, stability_fraction, and a freetext adjudicator_note column. Use adjudication_log_template.csv to record final labels and rationale.
+Stability threshold
+* Default stability_threshold = 0.8. Record the value used for each run and explore sensitivity in experiments.
+Provenance
+* For reproducibility, record the exact TH JSON, script version (git commit hash), and seed used in the run manifest.
+
+Motif assignment loader and key normalization
+Problem addressed
+* JSON files sometimes include a UTF8 BOM or are authored as Pythonstyle mappings; p_canon keys in JSON are strings while permutations are lists of integers. These mismatches caused json.load failures or KeyError during metric lookups.
+Fix implemented
+* BOM safe loader: open data/p_canon.json with encoding='utf-8-sig' so a leading BOM is stripped. If json.loads fails, fall back to ast.literal_eval to accept Pythonstyle mappings.
+* Key normalization: immediately after loading, normalize keys to integers:
+p_canon = {int(k): v for k, v in p_canon.items()}
+* Tolerant lookups: metric functions were made tolerant during transition by using:
+p_canon.get(key, p_canon.get(str(key)))
+Files changed
+* scripts/motif_assignment.py — loader and normalization.
+* scripts/compute_metrics.py — tolerant lookups where direct indexing occurred.
+Rationale
+* Prevents KeyError when permutations use integer event IDs and avoids failures caused by BOMs. Keeps downstream code simple and robust to minor file formatting differences.
+
+Migration note and recommended practice
+Migration note
+* If you have existing p_canon.json files with a BOM or Pythonstyle mapping, either rewrite them as valid JSON or rely on the loader’s fallback. Prefer canonical JSON with string keys or allow the loader to normalize keys to integers.
+Recommended repository practice
+* Version thresholds.json and weights.json.
+* Keep small sample inputs (perms_sample.csv, data/p_canon.json) in tests/ for CI.
+* Add unit tests for kendall_distance and disp_kappa_scaled (identity, single swap, reversed) to prevent regressions.
+
+Tests, postprocessing, and commit guidance
+Suggested unit tests
+* Create a pytest file that asserts expected dk and disp values for identity, single swap, and reversed permutations.
+Duplicate header cleanup
+* If labels_per_perm.csv contains duplicate headers, a short postprocess step can remove repeated header lines while preserving the first header.
+Commit message suggestion
+* Normalize p_canon keys, add BOM-safe loader, and make metric lookups robust
+
+Files required to run the pipeline described in Appendix G
+Below is a concise, reporelative checklist of every file (and file type) you need to run the motifassignment pipeline endtoend as described in Appendix G:
+
+scripts/motif_assignment.py
+scripts/compute_metrics.py
+scripts/generate_order_invariant_flags.py
+scripts/create_adjudication_files.py
+config/thresholds.json
+config/weights.json
+data/perms_sample.csv
+data/p_canon.json
+data/anchors.json
+outputs/labels_per_perm.csv
+outputs/adjudication_candidates.csv
+outputs/order_invariant_multilabel_flags.csv
+adjudication/adjudication_log_template.csv
+run_manifest.json
+tests/test_metrics.py
+tests/perms_sample.csv
+requirements.txt
+README.md
+
+Appendix F — ? Tuning and Quadratic Scaling
+This appendix documents the tuning of ? in the ?weighted displacement metric and the justification for the quadratic scaling term ?.
+F.1 Grid Search
+Preregistered grid:
+* ? from 0.8 to 2.0 in increments of 0.05
+* ? from 0.0000 to 0.0050 in increments of 0.0002
+Scaled displacement metric:
+disp_{?,?}(pi) =
+    sum_i |position_i(pi) – position_i(canonical)|^?
+    + ? * (sum_i |position_i(pi) – position_i(canonical)|)^2
+? controls curvature; ? stabilizes the upper tail.
+
+F.2 CrossValidation
+Fivefold crossvalidation evaluated correlation with score_dir.
+Best region:
+* Mean Pearson ? –0.903
+* SD ? 0.0196
+* Optimal ? ? 1.2
+* Optimal ? ? 0.0001
+
+F.3 Bootstrap Diagnostics
+1,000 bootstrap resamples:
+* ? clustered tightly around 1.2 (95% CI ? [1.15, 1.30])
+* ? clustered near 0.0001
+* No bootstrap sample selected ? > 0.001
+
+F.4 Justification for Quadratic Scaling
+The quadratic term:
+* prevents extreme permutations from collapsing into a narrow displacement range
+* improves monotonicity in the upper tail
+* enhances correlation with score_dir
+? = 0.0001 balances stability and interpretability.
+
+F.5 Comparison of Competing Metrics
+Pure Kendall: Pearson ? –0.707
+Kendall + linear displacement: ? –0.781
+Kendall + ?-weighted displacement: ? –0.892
+Hybrid (?-weighted + quadratic): ? –0.903
+The hybrid metric performs best.
+
+
+Appendix G — Preregistered Human Evaluation Plan
+This appendix presents the full preregistered protocol for the human evaluation study designed to assess how structural motif transformations affect perceived narrative coherence. The preregistration was completed prior to data collection and specifies all procedures, measures, and analytic plans.
+The evaluation uses representative exemplars from each motif class—BRE, FM/EM, APD, DCO, GD, and two contrasting exemplars from the heterogeneous Other class—to sample the structural diversity of the permutation space. These exemplars were selected based on their motifdefining properties rather than geometric proximity in the embedding, reflecting the motifbased framework adopted in the main text.
+The preregistered plan includes:
+* Stimulus selection: one exemplar per motif class, plus two contrasting exemplars for the Other class (low and highincoherence).
+* Outcome measures: Likertscale coherence ratings, comprehension accuracy, and readingtime measures.
+* Statistical modeling: mixedeffects regression models with random intercepts for participants and items.
+* Power analysis: preregistered samplesize justification based on expected effect sizes for motiflevel contrasts.
+* Exclusion criteria: preregistered rules for attention checks, readingtime outliers, and incomplete responses.
+* Hypotheses: predicted relationships between motif class, directional coherence (score_dir), ?weighted displacement, and human judgments of coherence.
+This appendix provides the complete preregistered materials to ensure transparency, reproducibility, and alignment between the computational taxonomy and the humanevaluation component of the study.
+
+
+
+
+
