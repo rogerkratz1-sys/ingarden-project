@@ -1,5 +1,7 @@
-name: CI
+﻿name: CI
+
 on: [push, pull_request]
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -7,113 +9,32 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Show repo tree
-        run: |
-          pwd
-          ls -la
-          echo 'Top-level files:'
-          ls -la | sed -n '1,200p'
-          echo 'data folder:'
-          ls -la data || true
-
       - name: Set up Python
         uses: actions/setup-python@v4
-- name: Show repo tree and debug
-  shell: bash
-  run: |
-    set -euxo pipefail
-    echo "Working directory: $(pwd)"
-    echo "Top-level files:"
-    ls -la
-    echo "Scripts folder:"
-    ls -la scripts || true
-    echo "Show script head:"
-    sed -n '1,200p' scripts/run_example_repro.py || true
-
-- name: Install dependencies
-  shell: bash
-  run: |
-    set -euxo pipefail
-    python -m pip install --upgrade pip
-    if [ -f requirements.txt ]; then pip install -r requirements.txt; else echo "No requirements.txt"; fi
-
-- name: Run example (verbose)
-  shell: bash
-  run: |
-    set -euxo pipefail
-    python -u scripts/run_example_repro.py --input data/motif_stability_summary.csv --outdir outputs
-  - name: Show repo tree and debug
-    shell: bash
-    run: |
-      set -euxo pipefail
-      echo "Working directory: $(pwd)"
-      echo "Top-level files:"
-      ls -la
-      echo "Scripts folder:"
-      ls -la scripts || true
-      echo "Show script head:"
-      sed -n '1,200p' scripts/run_example_repro.py || true
-
-  - name: Install dependencies
-    shell: bash
-    run: |
-      set -euxo pipefail
-      python -m pip install --upgrade pip
-      if [ -f requirements.txt ]; then pip install -r requirements.txt; else echo "No requirements.txt"; fi
-
-  - name: Run example (verbose)
-    shell: bash
-    run: |
-      set -euxo pipefail
-      python -u scripts/run_example_repro.py --input data/motif_stability_summary.csv --outdir outputs
         with:
           python-version: '3.10'
 
-      - name: Install deps
+      - name: Show repo tree and debug
         shell: bash
         run: |
+          set -euxo pipefail
+          echo "Working directory: $(pwd)"
+          echo "Top-level files:"
+          ls -la
+          echo "Scripts folder:"
+          ls -la scripts || true
+          echo "Show script head:"
+          sed -n '1,200p' scripts/run_example_repro.py || true
+
+      - name: Install dependencies
+        shell: bash
+        run: |
+          set -euxo pipefail
           python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then
-            pip install -r requirements.txt
-          else
-            echo "No requirements.txt found; skipping pip install -r requirements.txt"
-          fi
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; else echo "No requirements.txt"; fi
 
-      - name: Run artifact generation
+      - name: Run example (verbose)
         shell: bash
         run: |
-          echo "Running generate_artifacts.py with motif_stability_summary.csv"
-          python -V
-          python -u scripts/generate_artifacts.py --input data/motif_stability_summary.csv --outdir outputs || (echo "script failed with exit \True"; exit 1)
-
-      - name: Upload outputs
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: repro-outputs
-          path: outputs
-- name: Show repo tree and debug
-  shell: bash
-  run: |
-    set -euxo pipefail
-    echo "Working directory: $(pwd)"
-    echo "Top-level files:"
-    ls -la
-    echo "Scripts folder:"
-    ls -la scripts || true
-    echo "Show script head:"
-    sed -n "1,200p" scripts/run_example_repro.py || true
-
-- name: Install dependencies
-  shell: bash
-  run: |
-    set -euxo pipefail
-    python -m pip install --upgrade pip
-    if [ -f requirements.txt ]; then pip install -r requirements.txt; else echo "No requirements.txt"; fi
-
-- name: Run example (verbose)
-  shell: bash
-  run: |
-    set -euxo pipefail
-    python -u scripts/run_example_repro.py --input data/motif_stability_summary.csv --outdir outputs
-
+          set -euxo pipefail
+          python -u scripts/run_example_repro.py --input data/motif_stability_summary.csv --outdir outputs
