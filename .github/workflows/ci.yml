@@ -4,7 +4,9 @@ on: [push, pull_request]
 
 jobs:
   test:
-    runs-on: ubuntu-latest`n    env:`n      MPLBACKEND: Agg
+    runs-on: ubuntu-latest
+    env:
+      MPLBACKEND: Agg
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
@@ -38,3 +40,4 @@ jobs:
         run: |
           set -euxo pipefail
           python -u scripts/run_example_repro.py --input data/motif_stability_summary.csv --outdir outputs
+
