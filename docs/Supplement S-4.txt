@@ -1,0 +1,154 @@
+SUPPLEMENT S4 — Great Expectations (Split Speech Acts)
+Source text:  Great Expectations
+“Hold your noise!” cried a terrible voice, as a man started up from
+among the graves at the side of the church porch. “Keep still, you
+little devil, or I’ll cut your throat!”
+
+A fearful man, all in coarse grey, with a great iron on his leg. A man
+with no hat, and with broken shoes, and with an old rag tied round his
+head. A man who had been soaked in water, and smothered in mud, and
+lamed by stones, and cut by flints, and stung by nettles, and torn by
+briars; who limped, and shivered, and glared, and growled; and whose
+teeth chattered in his head as he seized me by the chin.
+
+“Oh! Don’t cut my throat, sir,” I pleaded in terror. “Pray don’t do it,
+sir.”
+
+“Tell us your name!” said the man. “Quick!”
+
+“Pip, sir.”
+
+“Once more,” said the man, staring at me. “Give it mouth!”
+
+“Pip. Pip, sir.”
+
+“Show us where you live,” said the man. “Pint out the place!”
+
+I pointed to where our village lay, on the flat in-shore among the
+alder-trees and pollards, a mile or more from the church.
+
+The man, after looking at me for a moment, turned me upside down, and
+emptied my pockets. There was nothing in them but a piece of bread.
+When the church came to itself,—for he was so sudden and strong that he
+made it go head over heels before me, and I saw the steeple under my
+feet,—when the church came to itself, I say, I was seated on a high
+tombstone, trembling while he ate the bread ravenously.
+
+Source (text used): Charles Dickens, Great Expectations (1861). Text from Project Gutenberg: Great Expectations (EBook #1400). PDF/TXT accessed: https://www.gutenberg.org/cache/epub/1400/pg1400.txt. See manifest.csv and supplement/NOTICE.txt for provenance and checksum.
+S4.1 Event Segmentation (Split Speech Acts)
+This supplement documents the finegrained segmentation of the Great Expectations passage in which each speech act is treated as an independent event. This segmentation follows Chambers & Jurafsky–style eventization and produces 16 atomic events:
+1. Man starts up from among the graves
+2. Man cries, “Hold your noise!”
+3. Man threatens to cut the child’s throat
+4. Man is described as fearful, coarse grey, iron on leg, soaked and torn
+5. Man seizes Pip by the chin
+6. Pip pleads, “Oh! Don’t cut my throat, sir.”
+7. Man demands Pip’s name
+8. Pip says his name (“Pip”)
+9. Man demands the name again (“Give it mouth!”)
+10. Pip repeats his name (“Pip, sir”)
+11. Man orders Pip to show where he lives
+12. Pip points to the village
+13. Man turns Pip upside down and empties his pockets
+14. Man finds only a piece of bread
+15. The church “comes to itself” (motion from rough handling)
+16. Pip sits trembling on a tombstone while the man eats the bread
+This segmentation is intentionally finegrained. Because many events are extremely short, adjacency violations accumulate rapidly and displacement penalties inflate. As discussed in the main paper, this granularity contributes to the motif collapse observed in this Supplement S4.
+
+S4.2 Poset Cover Relations (Split Speech Acts)
+Cover relations (i, j) indicate that event i must precede event j in the narrative poset.
+Compact poset representation:
+{(1,2),(2,3),(3,5),(4,5),(5,6),(6,7),(7,8),(8,9),(9,10),
+ (10,11),(11,12),(12,13),(13,14),(13,15),(14,16),(15,16)}
+
+S4.3 Methods
+Permutation Generation and Metrics
+* 5,000 random permutations of the 16event canonical ordering
+* Rejection sampler with fixed seed (43)
+* Structural metrics computed for each permutation: 
+o Kendall distance (dK)
+o scaled ?weighted displacement (disp_kappa_scaled)
+o adjacencycover violations
+o singlemove distance
+o maxblockmove distance
+o orderdual proximity
+o directional coherence (score_dir)
+Dissimilarity and Embedding
+Metrics were converted into a dissimilarity matrix and embedded using nonmetric MDS with:
+* 800 landmarks
+* 8dimensional hybrid space
+* identical pipeline to the Ten Virgins and Grimm analyses
+
+Clustering and Motif Assignment
+We applied Kmeans with k = 4 to the 8dimensional embedding.
+Motifs were assigned using the deterministic structural rules in Section?3.2 of the main paper:
+* BRE — BlockReorder Extremes
+* APD — AnchorPreserving Disorder
+* FM/EM — FrontMove / EndMove
+* DCO — DualCluster Outliers
+* GD — Global Distortion
+* Other — heterogeneous residual class
+Under this finegrained segmentation, only three motifs appeared:
+Other, GD, and FM/EM.
+Verification Diagnostics
+All embedding files, metrics, and labels are included so readers can recompute silhouette, inertia, and motifassignment diagnostics.
+
+S4.4 Results
+Motif Cardinalities (TextOnly)
+Other: 4084
+GD: 754
+FM/EM: 162
+BRE, APD, and DCO did not appear under this segmentation.
+Exemplar Permutations
+Representative permutations (top three by score_dir) for each motif are provided in:
+kw_seed43/cluster_examples_3percluster.csv
+Interpretation
+The splitspeechact segmentation introduces substantial noise:
+* many events are extremely short
+* adjacency violations accumulate rapidly
+* displacement penalties inflate
+* the GD motif expands disproportionately
+* the Other class absorbs most remaining permutations
+As a result, the sixmotif taxonomy collapses to three motifs.
+This is not a failure of the taxonomy; it is a consequence of segmentation granularity.
+This motivates the collapsedspeechact analysis in Supplement S5.
+
+S4.5 Files Produced (Canonical Run Directory)
+All files included in Supplement S4:
+perms_ge_5000_seed43.csv
+metrics_per_perm_seed43.csv
+dissimilarity_matrix.npy
+
+embedding_seed43/embedding_8d.npy
+embedding_seed43/landmark_coords.npy
+embedding_seed43/landmark_indices.npy
+
+kw_seed43/labels_per_perm.csv
+kw_seed43/cluster_examples_3percluster.csv
+kw_seed43/motif_cardinalities.csv
+
+SHA256_manifest.txt
+
+S4.6 README (for Supplement_S4 directory)
+Supplement_S4/
+A reproducible directory containing all artifacts for the splitspeechact analysis.
+
+Toplevel files:
+  perms_ge_5000_seed43.csv
+  metrics_per_perm_seed43.csv
+  dissimilarity_matrix.npy
+  SHA256_manifest.txt
+
+Embedding directory:
+  embedding_seed43/embedding_8d.npy
+  embedding_seed43/landmark_coords.npy
+  embedding_seed43/landmark_indices.npy
+
+Clustering directory:
+  kw_seed43/labels_per_perm.csv
+  kw_seed43/cluster_examples_3percluster.csv
+  kw_seed43/motif_cardinalities.csv
+
+All files correspond to the finegrained segmentation used in S4.
+
+

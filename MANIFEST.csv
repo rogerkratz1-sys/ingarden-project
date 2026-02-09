@@ -1,0 +1,4 @@
+﻿ id,canonical_path,name,type,description,provenance_run,sha256,size_bytes,recommendation,notes
+,ingarden_project/LICENSE,LICENSE,txt,MIT license for code,20260208,DE5D179BE46ACDF62D576405D7534485A88F2EA7B4E5E328CBE94EA3311B12D1,1087,keep,normalized_name
+,ingarden_project/LICENSE-DATA,LICENSE-DATA,txt,CC-BY 4.0 license for data,20260208,4DE055B1A3D9F88FBD3F7A2B9F8779DC983DC8BE86D214E36B0A16DC6D84FFD5,3480,keep,normalized_name
+,ingarden_project/CITATION.cff,CITATION.cff,txt,Citation metadata (CITATION.cff),20260208,E7B828F782088D76D1E985CCB0D736662DF48C174025228719FBF538C322067D,736,keep,normalized_name

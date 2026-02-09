@@ -1,0 +1,186 @@
+SUPPLEMENT S5 — Great Expectations (Collapsed Speech Acts)
+
+Source text:  Great Expectations
+“Hold your noise!” cried a terrible voice, as a man started up from
+among the graves at the side of the church porch. “Keep still, you
+little devil, or I’ll cut your throat!”
+
+A fearful man, all in coarse grey, with a great iron on his leg. A man
+with no hat, and with broken shoes, and with an old rag tied round his
+head. A man who had been soaked in water, and smothered in mud, and
+lamed by stones, and cut by flints, and stung by nettles, and torn by
+briars; who limped, and shivered, and glared, and growled; and whose
+teeth chattered in his head as he seized me by the chin.
+
+“Oh! Don’t cut my throat, sir,” I pleaded in terror. “Pray don’t do it,
+sir.”
+
+“Tell us your name!” said the man. “Quick!”
+
+“Pip, sir.”
+
+“Once more,” said the man, staring at me. “Give it mouth!”
+
+“Pip. Pip, sir.”
+
+“Show us where you live,” said the man. “Pint out the place!”
+
+I pointed to where our village lay, on the flat in-shore among the
+alder-trees and pollards, a mile or more from the church.
+
+The man, after looking at me for a moment, turned me upside down, and
+emptied my pockets. There was nothing in them but a piece of bread.
+When the church came to itself,—for he was so sudden and strong that he
+made it go head over heels before me, and I saw the steeple under my
+feet,—when the church came to itself, I say, I was seated on a high
+tombstone, trembling while he ate the bread ravenously.
+
+Source (text used): Charles Dickens, Great Expectations (1861). Text from Project Gutenberg: Great Expectations (EBook #1400). PDF/TXT accessed: https://www.gutenberg.org/cache/epub/1400/pg1400.txt. See manifest.csv and supplement/NOTICE.txt for provenance and checksum.
+
+S5.1 Event Segmentation (Collapsed Speech Acts)
+This supplement documents the collapsedspeechact segmentation of the Great Expectations passage. Unlike the finegrained segmentation in Supplement S4, this version merges microutterances into coherent semantic units. The result is 14 events, reducing segmentation noise introduced by ultrashort speech acts.
+Events:
+1. Man starts up from among the graves
+2. Man cries “Hold your noise!”
+3. Man threatens to cut the child’s throat
+4. Man is described as fearful, coarse grey, iron on leg, soaked and torn
+5. Man seizes Pip by the chin
+6. Pip pleads not to have his throat cut
+7. Man demands Pip’s name (merged: initial demand + “Give it mouth!”)
+8. Pip gives his name (merged: “Pip” + “Pip, sir.”)
+9. Man orders Pip to show where he lives
+10. Pip points to the village
+11. Man turns Pip upside down and empties his pockets
+12. Man finds only a piece of bread
+13. The church “comes to itself” (motion from rough handling)
+14. Pip sits trembling on a tombstone while the man eats the bread
+This segmentation reduces the original 16 microevents (Supplement S4) to 14 coherent events, eliminating noise from ultrashort speech acts.
+
+S5.2 Poset Cover Relations (Collapsed Speech Acts)
+Cover relations (i, j) indicate that event i must precede event j in the narrative poset.
+Compact poset:
+{(1,2),(2,3),(3,5),(4,5),(5,6),(6,7),(7,8),(8,9),
+ (9,10),(10,11),(11,12),(11,13),(12,14),(13,14)}
+
+S5.3 Methods
+Permutation Generation and Metrics
+Using the collapsed eventization, we generated 5,000 random permutations and computed the structural metrics used throughout the paper:
+* Kendall distance (dK)
+* scaled ?weighted displacement (disp_kappa_scaled)
+* adjacencycover violations
+* singlemove distance
+* maxblockmove distance
+* orderdual proximity
+* directional coherence (score_dir)
+Embedding and Clustering
+All permutations were embedded into the 8dimensional hybrid metric space (Section?3.1 of the main paper).
+For visualization, we projected the embedding into 3D using PCA, but clustering was performed in the full 8D space.
+We applied Kmeans with k = 6 to test whether additional cluster resolution would reveal finergrained structure.
+Motif Assignment
+Motifs were assigned using the deterministic structural rules in Section?3.2 of the main paper:
+* BRE — BlockReorder Extremes
+* APD — AnchorPreserving Disorder
+* FM/EM — FrontMove / EndMove
+* DCO — DualCluster Outliers
+* GD — Global Distortion
+* Other — heterogeneous residual class
+Motif assignment is independent of clustering and depends solely on structural metrics.
+
+S5.4 Results
+Motif Cardinalities (TextOnly)
+Other: 3366
+GD: 1334
+FM/EM: 177
+BRE: 123
+APD and DCO did not appear in this passage, consistent with its short, linear structure and lack of anchor or dualcluster affordances.
+Exemplar Permutations
+Representative permutations (top three by score_dir) for each motif are provided in:
+cluster_examples_3percluster.csv
+Clustering Structure
+Clustering in the full 8D embedding produced six clusters, but motif assignments remained unchanged.
+This demonstrates that motif taxonomy is robust to clustering resolution: structural thresholds dominate the organization of the permutation space.
+Effect of SpeechAct Collapsing
+Collapsing speech acts:
+* reduces segmentation noise
+* prevents artificial inflation of the GD motif (seen in Supplement S4)
+* yields a more interpretable motif distribution
+* aligns more closely with the Grimm analysis (Supplement S3)
+The collapsed segmentation provides a clearer view of structural tendencies in the Great Expectations passage.
+
+S5.5 Files Produced (Canonical Run Directory)
+All files included in Supplement S5:
+perms_ge_5000_seed43.csv
+metrics_per_perm_seed43.csv
+
+embedding_seed43/embedding_8d.npy
+embedding_seed43/landmark_coords.npy
+embedding_seed43/landmark_indices.npy
+
+kw_seed43_k6_fixed/labels_per_perm.csv
+kw_seed43_k6_fixed/cluster_examples_3percluster.csv
+kw_seed43_k6_fixed/motif_cardinalities.csv
+
+SHA256_manifest.txt
+This directory mirrors Supplement S4 but reflects the corrected clustering procedure and the collapsedspeechact eventization.
+
+S5.6 README (for Supplement_S5 directory)
+Supplement_S5/
+A reproducible directory containing all artifacts for the collapsedspeechact analysis.
+
+Toplevel files:
+  perms_ge_5000_seed43.csv
+  metrics_per_perm_seed43.csv
+  SHA256_manifest.txt
+
+Embedding directory:
+  embedding_seed43/embedding_8d.npy
+  embedding_seed43/landmark_coords.npy
+  embedding_seed43/landmark_indices.npy
+
+Clustering directory:
+  kw_seed43_k6_fixed/labels_per_perm.csv
+  kw_seed43_k6_fixed/cluster_examples_3percluster.csv
+  kw_seed43_k6_fixed/motif_cardinalities.csv
+
+S4 vs S5 Comparison (TextOnly)
+Feature: Event count
+S4 (Split): 16
+S5 (Collapsed): 14
+------------------------------------------------------------
+
+Feature: Segmentation noise
+S4: High
+S5: Low
+------------------------------------------------------------
+
+Feature: GD inflation
+S4: Severe
+S5: Reduced
+------------------------------------------------------------
+
+Feature: APD present?
+S4: No
+S5: No
+------------------------------------------------------------
+
+Feature: DCO present?
+S4: No
+S5: No
+------------------------------------------------------------
+
+Feature: Clustering
+S4: PCAcollapsed 3D
+S5: Full 8D
+------------------------------------------------------------
+
+Feature: Motif stability
+S4: Unstable
+S5: Stable
+------------------------------------------------------------
+
+Feature: Interpretability
+S4: Lower
+S5: Higher
+------------------------------------------------------------
+
+

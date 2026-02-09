@@ -1,0 +1,7 @@
+exemplar_id,permutation,primary_label,label_BRE,stable_BRE,label_FM_EM,stable_FM_EM,label_APD,stable_APD,label_DCO,stable_DCO,label_GD,stable_GD,label_Other,stable_Other
+BRE,1 2 3 4 5 6 7 8 9 10 11 12,BRE,1,1,0,0,0,0,0,0,0,0,0,0
+Other_low,1 5 2 9 7 10 3 11 6 12 4 8,Other,0,0,0,0,0,0,0,0,0,0,1,1
+FM_EM,10 1 2 3 4 5 6 7 8 9 11 12,FM_EM,0,0,1,1,0,0,0,0,0,0,0,0
+APD,1 3 5 6 2 4 7 8 9 10 11 12,APD,0,0,0,0,1,1,0,0,0,0,0,0
+DCO,1 5 6 7 4 3 2 8 9 10 11 12,DCO,0,0,0,0,0,0,1,1,0,0,0,0
+Other_high,6 3 1 9 4 11 2 8 5 7 12 10,Other,0,0,0,0,0,0,0,0,0,0,1,1
