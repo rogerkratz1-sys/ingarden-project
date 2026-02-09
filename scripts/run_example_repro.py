@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 """
 Wrapper entrypoint for CI: runs generate_artifacts.py and reports clear errors.
 """
@@ -20,17 +20,13 @@ def main():
     print("Running:", " ".join(cmd))
     try:
         res = subprocess.run(cmd, check=True, capture_output=True, text=True)
-        print("STDOUT:
-", res.stdout)
-        print("STDERR:
-", res.stderr)
+        print("STDOUT:\n", res.stdout)
+        print("STDERR:\n", res.stderr)
         print("generate_artifacts.py completed successfully.")
     except subprocess.CalledProcessError as e:
         print("generate_artifacts.py failed with return code", e.returncode)
-        print("STDOUT:
-", e.stdout)
-        print("STDERR:
-", e.stderr)
+        print("STDOUT:\n", e.stdout)
+        print("STDERR:\n", e.stderr)
         print("Traceback (wrapper):")
         traceback.print_exc()
         sys.exit(e.returncode)
