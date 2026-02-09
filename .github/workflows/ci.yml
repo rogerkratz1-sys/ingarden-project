@@ -7,6 +7,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Show repo tree
+        run: |
+          pwd
+          ls -la
+          echo 'Top-level files:'
+          ls -la | sed -n '1,200p'
+          echo 'data folder:'
+          ls -la data || true
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
@@ -22,11 +31,16 @@ jobs:
             echo "No requirements.txt found; skipping pip install -r requirements.txt"
           fi
 
-      - name: Run example
+      - name: Run artifact generation
         shell: bash
         run: |
+          echo "Running generate_artifacts.py with motif_stability_summary.csv"
           python -V
-          python -m pip show pip
-          python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-          python -u scripts/run_example_repro.py --input data/motif_stability_summary_example.csv --outdir outputs
+          python -u scripts/generate_artifacts.py --input data/motif_stability_summary.csv --outdir outputs || (echo "script failed with exit \True"; exit 1)
+
+      - name: Upload outputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: repro-outputs
+          path: outputs
