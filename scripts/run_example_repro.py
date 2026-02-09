@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 \"\"\"
 Wrapper entrypoint for CI: runs generate_artifacts.py and reports clear errors.
 \"\"\"
