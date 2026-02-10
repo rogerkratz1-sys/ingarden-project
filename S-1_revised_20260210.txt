@@ -1,1 +1,129 @@
-﻿[PASTE THE ENTIRE TEXT BLOCK FROM SECTION 1 HERE]
+﻿Supplement S‑1 — Motif Stability Artifacts and Reproducibility
+Supplement version: 2026-02-10 (commit 7350a47)
+
+1 Overview
+This Supplement documents the reproducibility artifacts, deterministic motif flags, and sensitivity analyses that accompany motif discovery described in Sections 2.5–2.6 of the main paper. It consolidates deterministic motif flags, randomized and bootstrap stability diagnostics, adjudication templates, and the deterministic cluster→motif mapping used to compare alternative eventizations (Parse A and Parse B) to the canonical taxonomy. All artifacts referenced below are included in the repository at commit 7350a47; the canonical per‑permutation stability table is archived as outputs/motif_stability_per_permutation_raw.csv.
+
+2 Methods
+
+2.1 Clustering and motif assignment
+Embedding and clustering. We clustered the hybrid‑metric embedding using Partitioning Around Medoids (PAM) with k = 4 to identify macrofamilies and select representative exemplars for descriptive summaries.
+Statistical diagnostics. Kruskal–Wallis tests were applied as nonparametric diagnostics to compare distributions of structural metrics across clusters.
+Labeling approach. Motif labels were assigned post hoc using deterministic structural rules rather than rule‑based discovery; these deterministic rules are implemented in scripts/generate_order_invariant_flags.py and related scripts.
+
+2.2 Deterministic motif rules and order‑invariant flags
+Order‑invariant multilabel flags. For every permutation we record order‑invariant multilabel flags: a permutation may satisfy multiple motif conditions (e.g., block moves, long‑range displacements, anchor preservation violations, proximity to the order‑dual).
+Primary label precedence. For reporting and summary tables we also record a precedence‑based primary label using the sequence:
+GlobalDistortion → FrontEndMove → BlockReorderExtreme → DualClusterOutlier → AnchorPreservingDisorder → Other.
+Canonical adjacency cover. Order‑invariant flags are defined by testing violations of the canonical adjacency cover extracted from the Ten Virgins parable:
+((1,3), (1,4), (1,5), (3,8), (4,8), (5,6), (6,7), (7,8), (8,9), (9,10), (10,11), (11,12)).
+
+2.3 Randomized stability tests (adjacency cover sensitivity)
+Definition. For each permutation we compute stability_fraction, the fraction of randomized cover‑check orders that preserve the original sequential first‑violated cover.
+Default and extended runs. Default randomized runs use N = 500 random orders; extended runs with N = 2000 are included in the artifact bundle for sensitivity checks.
+Interpretation. Low stability_fraction rows are exported as adjudication candidates for manual review; aggregated summaries and motif‑level instability reports are provided in the outputs.
+
+2.4 Bootstrap rank stability (structural metric)
+Procedure. Structural metric rank stability is assessed via bootstrap perturbations of the metric and recomputation of rank concordance.
+Summary statistic. The demonstration run reports mean rank concordance 0.981 (N = 500 bootstrap samples). Bootstrap samples and summaries are included in the artifact bundle.
+
+2.5 Mapping procedure and agreement computation Segmentation sensitivity
+Purpose and inputs. To compare motif assignments across eventizations (canonical vs. Parse A vs. Parse B) we produce a deterministic mapping from parse cluster IDs to canonical motif names. Inputs are the canonical per‑permutation file (motif_stability_per_permutation.csv) and the parse cluster label CSVs produced by the alternative eventizations.
+Merge and table. These files are merged on the permutation index to produce a merged per‑permutation table (outputs/permutation_label_table.csv) containing canonical labels, parse cluster IDs, mapped labels, and stability_fraction.
+Majority‑vote mapping. For each parse cluster ID (separately for Parse A and Parse B) we compute the frequency distribution of canonical motif labels among permutations assigned to that cluster and map the cluster to the canonical motif with the highest frequency (majority vote). The mappings are written to outputs/cluster_to_motif_mapping_parseA.csv and outputs/cluster_to_motif_mapping_parseB.csv.
+Ties and ambiguous clusters. Clusters with no clear majority (ties or very low maximum frequency) are left mapped to the plurality label in the CSVs; ambiguous cases and adjudication candidates are exported for manual review (see adjudication artifacts). The merged per‑permutation table includes mapped labels so reviewers can inspect individual mismatches.
+Agreement statistics. After applying the majority‑vote mapping we compute Adjusted Rand Index (ARI) and Cohen’s κ between canonical primary labels and mapped parse labels; results are reported in Section 4 below and in outputs/segmentation_agreement_mapped.csv.
+Determinism and reproducibility. The mapping procedure is deterministic given identical inputs and cluster assignments; scripts to reproduce the mapping and agreement computations are provided in scripts/ (see write_mapping_and_table.py and compute_segmentation_agreement_map_and_recompute.py).
+
+3 Artifacts and file manifest key items
+All paths are relative to the repository root. The demonstration run on 2026-02-10 (commit 7350a47) produced and/or consolidated the following artifacts; the full manifest and MD5 checksums are included in checksums.md5.
+
+3.1 Core stability artifacts
+outputs/motif_stability_per_permutation_raw.csv — canonical per‑permutation stability table (primary archival file).
+outputs/motif_stability_per_permutation.csv — original aggregator output (provenance).
+outputs/motif_stability_summary.csv — motif‑level summary statistics.
+outputs/stability_bootstrap_samples.csv — bootstrap samples for rank stability.
+outputs/stability_bootstrap_summary.csv — bootstrap concordance summary.
+supplement/artifacts/stability_tests/stability_summary.csv — run‑level summary produced by the randomized stability script.
+stability_plots/ — diagnostic plots (rank concordance, rank concordance by motif, bootstrap distributions, etc.).
+
+3.2 Mapping and agreement artifacts
+outputs/permutation_label_table.csv — merged per‑permutation table with canonical labels, parse cluster IDs, mapped labels, and stability_fraction.
+outputs/cluster_to_motif_mapping_parseA.csv — Parse A cluster → mapped canonical motif (majority vote).
+outputs/cluster_to_motif_mapping_parseB.csv — Parse B cluster → mapped canonical motif (majority vote).
+outputs/segmentation_agreement_mapped.csv — computed ARI and Cohen’s κ and related summaries.
+
+3.3 Adjudication artifacts
+outputs/adjudication_candidates.csv
+outputs/supplementary_adjudication_candidates.csv
+outputs/adjudication_log.csv
+outputs/adjudication_instructions.md
+
+3.4 Supplementary provenance and scripts
+supplement/diagnostics_per_exemplar.csv
+supplement/reader_ratings_summary.csv
+scripts/ — scripts used to generate artifacts (aggregation, mapping, adjudication, stability tests).
+checksums.md5 — MD5 checksums for CSV artifacts included in the bundle.
+
+4 Numeric summaries and interpretation
+
+4.1 Agreement statistics canonical ↔ parse
+Canonical ↔ Parse A (13 events): Adjusted Rand index 0.1928574; Cohen’s κ 0.2857143.
+Canonical ↔ Parse B (11 events): Adjusted Rand index 0.1862662; Cohen’s κ 0.2690476.
+
+4.2 Permotif preservation canonical → mapped parse labels
+Motif | Count in canonical | Fraction preserved (Parse A) | Fraction preserved (Parse B)
+APD   | 100                 | 0.96                         | 0.99
+BRE   | 100                 | 0.27                         | 0.24
+DCO   | 100                 | 0.74                         | 0.70
+FMEM  | 20                  | 0.00                         | 0.00
+GD    | 100                 | 0.23                         | 0.00
+Other | 100                 | 0.00                         | 0.20
+
+4.3 Interpretation
+APD (AnchorPreservingDisorder) is nearly fully preserved under both alternative eventizations; DCO (DualClusterOutlier) and BRE (BlockReorderExtreme) show substantial but incomplete preservation; FMEM and parts of GD/Other are sensitive to segmentation choices. The full per‑permutation table is provided so readers can inspect individual permutations that contribute to these summary statistics.
+
+5 Reproducibility instructions
+
+5.1 Repository state
+Use the repository at commit 7350a47 to reproduce the demonstration run and to verify checksums.
+
+5.2 Reproduction steps high level
+1. Clone the repository and check out commit 7350a47.
+2. Install Python dependencies listed in README.md (recommended: create and activate a virtual environment).
+3. Regenerate randomized stability outputs (optional):
+   python scripts/run_randomized_stability_tests.py --n 500
+   Use --n 2000 for extended runs.
+4. Aggregate per‑permutation results:
+   python scripts/aggregate_motif_stability.py --kw-folder <kw_folder>
+   Replace <kw_folder> with the robustness results folder produced by the kw runs.
+5. Produce mapping and agreement outputs:
+   python scripts/write_mapping_and_table.py
+   python scripts/compute_segmentation_agreement_map_and_recompute.py
+6. Verify artifact integrity using checksums.md5.
+
+5.3 Determinism and adjudication
+The mapping procedure is deterministic given identical inputs and cluster assignments. Ambiguous clusters and low‑stability permutations are exported for manual adjudication and are not automatically re‑labeled beyond plurality/majority rules. Adjudication templates and instructions are included in outputs/.
+
+6 Provenance and contact
+All artifacts and scripts used to produce the figures and tables in this Supplement are included in the repository outputs/ and scripts/ directories. The per‑permutation stability table and mapping CSVs used in the manuscript are archived in commit 7350a47. For questions about reproducing specific steps or interpreting adjudication candidates, contact the corresponding author and consult outputs/adjudication_instructions.md.
+
+7 Files included recap
+anycover_motif_summary.csv
+order_invariant_multilabel_flags.csv
+multi_label_per_permutation.csv
+overlapping_cases.csv
+motif_stability_per_permutation.csv
+motif_stability_per_permutation_raw.csv
+motif_stability_summary.csv
+stability_bootstrap_samples.csv
+stability_bootstrap_summary.csv
+supplementary_adjudication_candidates.csv
+adjudication_candidates.csv
+adjudication_log_template.csv
+adjudication_instructions.md
+stability_plots/ (diagnostic plots)
+supplement/diagnostics_per_exemplar.csv
+supplement/reader_ratings_summary.csv
+scripts/ (generation and mapping scripts)
+README.md; LICENSE.txt; checksums.md5
