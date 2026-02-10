@@ -1,3 +1,9 @@
+B2F47E1F68A0CB94F437E2C199B33729  C:\Users\ctint\Desktop\Scripts\repo_candidate\docs\Supplement S-1.txt
+852C5FB48BA9E491A737AC724F9E2925  C:\Users\ctint\Desktop\Scripts\repo_candidate\docs\Supplement S-2.txt
+17792EEED52EA0B52B9AF57A487BE08C  C:\Users\ctint\Desktop\Scripts\repo_candidate\docs\Supplement S-3.txt
+BF953CE9417F67FE448B819D1A4A5C6E  C:\Users\ctint\Desktop\Scripts\repo_candidate\docs\Supplement S-4.txt
+215B6C1B992E5C6DE164AB550BD00976  C:\Users\ctint\Desktop\Scripts\repo_candidate\docs\Supplement S-5.txt
+62F8DB34B4A27FB06A791DD2BCC9D3DC  C:\Users\ctint\Desktop\Scripts\repo_candidate\docs\Supplement S-6.txt
 4E7F84534F8FBA5C44BEEFA26C54D787  C:\Users\ctint\Desktop\Scripts\repo_candidate\outputs\adjudication_candidates.csv
 A987096F663970BA0DDEF918CC3936B3  C:\Users\ctint\Desktop\Scripts\repo_candidate\outputs\adjudication_log.csv
 A987096F663970BA0DDEF918CC3936B3  C:\Users\ctint\Desktop\Scripts\repo_candidate\outputs\adjudication_log_template.csv
@@ -12,3 +18,12 @@ F1697CF43B1F4169F851FBC8E0187F2D  C:\Users\ctint\Desktop\Scripts\repo_candidate\
 2A9360073FF8771000287EC6E73656BC  C:\Users\ctint\Desktop\Scripts\repo_candidate\outputs\stability_bootstrap_samples.csv
 1F3893C27A6FC96AC0CF8FF794086FDE  C:\Users\ctint\Desktop\Scripts\repo_candidate\outputs\stability_bootstrap_summary.csv
 3D7571850259F096A1BC7B7B02DA3470  C:\Users\ctint\Desktop\Scripts\repo_candidate\outputs\stability_summary.csv
+4E7F84534F8FBA5C44BEEFA26C54D787  C:\Users\ctint\Desktop\Scripts\repo_candidate\supplement\artifacts\adjudication\adjudication_candidates.csv
+A987096F663970BA0DDEF918CC3936B3  C:\Users\ctint\Desktop\Scripts\repo_candidate\supplement\artifacts\adjudication\adjudication_log.csv
+2A9360073FF8771000287EC6E73656BC  C:\Users\ctint\Desktop\Scripts\repo_candidate\supplement\artifacts\stability_tests\stability_bootstrap_samples.csv
+3D7571850259F096A1BC7B7B02DA3470  C:\Users\ctint\Desktop\Scripts\repo_candidate\supplement\artifacts\stability_tests\stability_summary.csv
+3696B06CFA70696694241CCCF9B1FB62  C:\Users\ctint\Desktop\Scripts\repo_candidate\supplement\artifacts\all_motifs_520.csv
+538F5B64ADDFF83D6773B2145CB24229  C:\Users\ctint\Desktop\Scripts\repo_candidate\supplement\artifacts\order_invariant_multilabel_flags.csv
+016D8147DA6F16A64B6211BB76B2DC4E  C:\Users\ctint\Desktop\Scripts\repo_candidate\supplement\artifacts\sensitivity_full_merged.csv
+F00BC094031ACCCA69699350882E860E  C:\Users\ctint\Desktop\Scripts\repo_candidate\supplement\diagnostics_per_exemplar.csv
+6FD4B9EE036CE39D00AA0469E01DD959  C:\Users\ctint\Desktop\Scripts\repo_candidate\S-1_revised_20260210.txt
