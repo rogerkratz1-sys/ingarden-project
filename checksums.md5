@@ -1,4 +1,6 @@
-2C1E777DA601E8659DB7BFB76DD92E49  outputs\segmentation_agreement_mapped.csv
-A163B952FB5788AFD8D42E26A0414D6E  outputs\cluster_to_motif_mapping_parseA.csv
-FC020B37064F0F01F1D3BC41777F2290  outputs\cluster_to_motif_mapping_parseB.csv
-2FC1397EECC5E2E2CC3D27B6B803ECC7  outputs\permutation_label_table.csv
+0FB3A9F25BE28028DC477300A1C2D0BA  C:\Users\ctint\Desktop\Scripts\repo_candidate\outputs\adjudication_template.csv
+A163B952FB5788AFD8D42E26A0414D6E  C:\Users\ctint\Desktop\Scripts\repo_candidate\outputs\cluster_to_motif_mapping_parseA.csv
+FC020B37064F0F01F1D3BC41777F2290  C:\Users\ctint\Desktop\Scripts\repo_candidate\outputs\cluster_to_motif_mapping_parseB.csv
+2CF8C435F2B4F9030E197BA00FA55DC5  C:\Users\ctint\Desktop\Scripts\repo_candidate\outputs\labels_per_perm.csv
+2FC1397EECC5E2E2CC3D27B6B803ECC7  C:\Users\ctint\Desktop\Scripts\repo_candidate\outputs\permutation_label_table.csv
+2C1E777DA601E8659DB7BFB76DD92E49  C:\Users\ctint\Desktop\Scripts\repo_candidate\outputs\segmentation_agreement_mapped.csv
