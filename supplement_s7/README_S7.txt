@@ -24,3 +24,4 @@ Each file contains one parse unit per line and is named:
   punctsplit.txt
   discourseboundary.txt
   srlsim.txt
+Supplement S-7 added on 2026-02-16 from local folder 'Appendices and Supplements' by Roger Kratz.
