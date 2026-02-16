@@ -1,100 +1,109 @@
-SUPPLEMENT S1 — Motif Stability, Artifacts, and Reproducibility
+Supplement S7 — Eventization mappings, flip diagnostics, and reproducible artifacts
 
 Overview
-This Supplement documents the reproducibility artifacts, deterministic motif flags, and sensitivity analyses that accompany motif discovery described in Sections?2.5–2.6 of the main paper. It provides:
-* orderinvariant multilabel flags for every permutation
-* randomized stability diagnostics for the adjacencycover procedure
-* bootstrap stability diagnostics for the structural metric
-* adjudication templates for lowstability or overlapping cases
-These materials enable independent inspection of motif assignments, targeted manual review of borderline exemplars, and transparent reconstruction of all diagnostic outputs.
-To complement the stability analyses, this Supplement also describes the procedure used to identify permutations that are structurally distant yet geometrically close in the embedding, and it provides textonly listings of representative counterexamples.
+Purpose
+Provide the complete, publicationready reproducibility bundle for the eventization sensitivity analyses described in Appendix H. All files are plain UTF8 text or CSV. The supplement contains the exact parse texts used in the analyses, the canonical?parse mapping CSVs, full evaluation outputs, flip reports, multilabel flags, threshold sensitivity outputs, and the scripts needed to reproduce every diagnostic reported in the paper. No binary plots are required or included.
 
-Methods
-Clustering and discovery
-Clustering of the hybridmetric embedding was performed using PAM (k = 4) to identify macrofamilies and to select representative exemplars for descriptive summaries. Kruskal–Wallis tests were applied as nonparametric diagnostics to compare cluster distributions of structural metrics. No rulebased primary labels were used to discover clusters; all motif labels were applied post hoc using deterministic structural rules.
+Directory layout and authoritative files
+All paths are relative to the repository root. Filenames are exact and case sensitive.
+supplement_s7/
+  README_S7.txt
+  manifest_checksums.txt
+  eventizations/
+    canonical.txt
+    parseA.txt
+    parseB.txt
+    tokengran.txt
+    punctsplit.txt
+    discourseboundary.txt
+    srlsim.txt
+  mappings/
+    mapping_canonical_to_parseA.csv
+    mapping_canonical_to_parseB.csv
+    mapping_canonical_to_tokengran.csv
+    mapping_canonical_to_punctsplit.csv
+    mapping_canonical_to_discourseboundary.csv
+    mapping_canonical_to_srlsim.csv
+  results/
+    evaluation_results_canonical.json
+    evaluation_results_parseA.json
+    evaluation_results_parseB.json
+    evaluation_results_tokengran.json
+    evaluation_results_punctsplit.json
+    evaluation_results_discourseboundary.json
+    evaluation_results_srlsim.json
+    targeted_summary_*.json
+  flip_diagnostics/
+    flip_report_all_parses.csv
+    flip_examples_README.txt
+    flip_examples_sample.csv
+  stability/
+    threshold_sensitivity_results.csv
+    k_tuning_grid_results.csv
+  multilabel/
+    multi_label_per_permutation.csv
+    overlap_matrix.csv
+  scripts/
+    run_evaluation.py
+    compute_ari_kappa.py
+    flip_attribution.py
+    make_supplement_manifest.py
+  checksums/
+    sha256_checksums.txt
+Authoritative inputs are the files in eventizations/ and mappings/. The evaluation scripts read those files directly.
 
-Deterministic motif rules and orderinvariant flags
-Deterministic heuristics were applied to detect motif conditions within the invalid cloud, including:
-* block moves
-* longrange displacements
-* anchor preservation
-* proximity to the orderdual
-For each permutation we record orderinvariant multilabel flags (a permutation may satisfy multiple motif conditions). For comparison and adjudication, we also record a precedencebased primary label using the sequence:
-GlobalDistortion ? FrontEndMove ? BlockReorderExtreme ? DualClusterOutlier ? AnchorPreservingDisorder ? Other
-Orderinvariant flags were defined by testing violations of the canonical adjacency covers extracted from the Ten Virgins parable:
-(1,3), (1,4), (1,5), (3,8), (4,8), (5,6), (6,7), (7,8), (8,9), (9,10), (10,11), (11,12)
+Eventization text files (what they are and where to find them)
+Location: supplement_s7/eventizations/
+Format: UTF8 plain text; one parse unit per line; no markup beyond plain text.
+Files included
+* canonical.txt
+* parseA.txt
+* parseB.txt
+* tokengran.txt
+* punctsplit.txt
+* discourseboundary.txt
+* srlsim.txt
+How to use them
+1. Use the parse text file for a given parse together with the corresponding mapping CSV in supplement_s7/mappings/ to reproduce aggregation from parse units to canonical indices.
+2. Run scripts/run_evaluation.py with the --parse argument matching the parse name to reproduce the evaluation outputs for that parse. Example commands are in the Reproduction section below.
+3. When inspecting flips, open the parse text file to see the exact unitization that produced the mapping referenced in flip_report_all_parses.csv.
 
-Randomized stability tests
-To quantify sensitivity to the adjacencycover order, we randomized the covercheck sequence and computed a stability_fraction for each permutation: the fraction of random orders that preserved the original sequential firstviolated cover.
-* Default run: N = 500 random orders
-* Extended runs: N = 2000
-Separately, rank stability of the structural metric was assessed using bootstrap perturbations. Summary concordance statistics are included in this Supplement.
+Results formats and key files to inspect
+Evaluation outputs (results/) are JSON files with two toplevel keys: targeted and random_baseline. Each targeted entry contains the original permutation variant, raw diagnostics, boolean motif flags, aggregated canonical permutation, and aggregated diagnostics.
+Flip report (flip_diagnostics/flip_report_all_parses.csv) is a single CSV with one row per permutation that changes primary label under mapping. Columns are:
+perm_id,canonical_label,parse_label,parse_name,raw_kendall,raw_max_disp,raw_block_len,raw_block_disp,anchors_ok_canonical,anchors_ok_parse,flip_cause,explanation
+Multilabel outputs (multilabel/) list boolean motif flags for every permutation and an overlap matrix showing cooccurrence counts.
+Stability outputs (stability/) report threshold perturbation counts and kgrid results used in sensitivity checks.
 
-Adjudication workflow
-Permutations flagged as ambiguous (multiple multilabel flags, low stability_fraction, or overlapping firstviolated covers) are exported for human adjudication. This Supplement includes:
-* an adjudication rubric
-* an adjudication log template
-* CSVs of adjudication candidates
-These materials document final decisions and rationale.
+Reproduction quick commands
+Run these from the repository root. All scripts accept --help for full options.
+# Evaluate canonical parse and write results
+python supplement_s7/scripts/run_evaluation.py --parse canonical --outdir supplement_s7/results --M_target 200 --N_random 5000
 
-Counterexample identification: structurally distant but geometrically close permutations
-This Supplement documents the procedure used to identify permutations that are structurally distant (large ?weighted displacement) yet geometrically proximate (high score_dir) in the embedding.
-These counterexamples illustrate that geometric proximity does not guarantee structural similarity, and they clarify why motif assignment is based entirely on structural features rather than embedding coordinates.
+# Evaluate ParseA
+python supplement_s7/scripts/run_evaluation.py --parse parseA --outdir supplement_s7/results --M_target 200 --N_random 5000
 
-Procedure
-1. Load the full ?dispersion dataset (~479,000 rows).
-2. Compute joint extremality: 
-o rank permutations by disp_kappa_scaled (descending)
-o rank permutations by score_dir (descending)
-3. Identify candidates in the top decile of both structural displacement and geometric similarity.
-4. Filter out trivial duals and nearduals (expected to be structurally extreme but geometrically coherent).
-5. Inspect remaining candidates for adjacencycover patterns, motifrule violations, and embedding coordinates.
-6. Export textonly counterexample lines for inclusion in this Supplement and for reproducibility.
+# Compute ARI and Cohen's K with bootstrap CIs
+python supplement_s7/scripts/compute_ari_kappa.py --canonical supplement_s7/results/evaluation_results_canonical.json --parse supplement_s7/results/evaluation_results_parseA.json --out supplement_s7/results/ari_parseA.csv
 
-Representative counterexamples (textonly)
-These permutations satisfy the joint extremality criterion:
-[8, 6, 11, 12, 7, 2, 9, 4, 10, 1, 5, 3], score_dir = 0.6762, disp_kappa_scaled = 884.7481
-[9, 10, 7, 11, 1, 12, 6, 4, 3, 5, 2, 8], score_dir = 0.6766, disp_kappa_scaled = 944.8404
-[5, 12, 9, 11, 8, 10, 4, 3, 7, 2, 1, 6], score_dir = 0.6650, disp_kappa_scaled = 1055.7419
-[11, 12, 10, 2, 9, 3, 5, 8, 4, 6, 7, 1], score_dir = 0.6802, disp_kappa_scaled = 841.0187
-[8, 6, 5, 12, 1, 11, 2, 3, 9, 10, 7, 4], score_dir = 0.7144, disp_kappa_scaled = 469.0068
-These cases demonstrate that the structural metric can assign large displacement to permutations that remain geometrically close in the embedding.
+# Produce flip attribution report across all parses
+python supplement_s7/scripts/flip_attribution.py --results-dir supplement_s7/results --mappings-dir supplement_s7/mappings --out supplement_s7/flip_diagnostics/flip_report_all_parses.csv
 
-Key stability results (summary)
-Structural metric rank stability (bootstrap)
-Mean rank concordance for the demonstration run: 0.981 (N = 500).
-Diagnostic distributions and exemplar minima identify borderline cases for manual review.
-Coverorder sensitivity
-The stability_fraction quantifies how often the original sequential firstviolated cover is preserved under randomized cover checks.
-Lowstability rows are exported for adjudication.
+# Regenerate manifest and checksums
+python supplement_s7/scripts/make_supplement_manifest.py --root supplement_s7 --out supplement_s7/manifest_checksums.txt
+Notes
+* Use --seed to reproduce exact targeted variants.
+* Use --workers to parallelize expensive baseline computations.
 
-Files included in Supplement S2
-anycover_motif_summary.csv
-order_invariant_multilabel_flags.csv
-multi_label_per_permutation.csv
-overlapping_cases.csv
-overlapping_cases_detected.csv
-motif_stability_per_permutation.csv
-motif_stability_per_permutation_raw.csv
-motif_stability_summary.csv
-stability_bootstrap_samples.csv
-stability_bootstrap_summary.csv
-supplementary_adjudication_candidates.csv
-adjudication_candidates.csv
-adjudication_log_template.csv
-adjudication_instructions.md
-stability_plots/
-supplement/diagnostics_per_exemplar.csv
-supplement/reader_ratings_summary.csv
-scripts/generate_artifacts.py
-scripts/generate_order_invariant_flags.py
-scripts/run_randomized_cover_checks.py
-scripts/run_stability_bootstrap.py
-scripts/create_adjudication_files.py
+Checksums, provenance, and contact
+Checksums: checksums/sha256_checksums.txt and manifest_checksums.txt list SHA256 checksums and file sizes for every file in supplement_s7/. Verify integrity after download or cloning.
+Provenance: Each evaluation_results_*.json includes the run manifest fields git_commit, thresholds_file, weights_file, and seed.
+Contact and license: Code and data in this supplement are released under the MIT License. For reproduction questions contact the corresponding author listed in the main manuscript.
 
-Provenance and reproducibility notes
-All artifacts in this Supplement were produced from the pipeline outputs and demonstration reader summary included with the Supplement.
-If real reader data are substituted, rerun the scripts in scripts/ to regenerate final artifacts and updated stability summaries.
-Both orderinvariant multilabel outputs and precedencebased primary labels are archived so readers can reproduce both approaches and inspect cases where they diverge.
+Short guidance for readers and reviewers
+* To inspect any flip, open the corresponding parse text file in supplement_s7/eventizations/, consult the mapping CSV in supplement_s7/mappings/, and then inspect the flip row in supplement_s7/flip_diagnostics/flip_report_all_parses.csv.
+* If you want a quick check of agreement metrics, run compute_ari_kappa.py on the canonical and one parse result JSON.
+* If you modify or add eventizations, add a new parse text file and mapping CSV, then run run_evaluation.py and update the manifest with make_supplement_manifest.py.
+
 
 
