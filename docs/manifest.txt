@@ -1,0 +1,215 @@
+MANIFEST: Appendix I and Supplement S-8
+
+Purpose:
+  This manifest consolidates all essential information needed to regenerate
+  Appendix I and Supplement S-8, combining public-facing clarity with full
+  internal provenance. It records canonical inputs, scripts, run folders,
+  parameters, and commands used during assembly on 2026-02-21.
+
+
+1. DIRECTORY STRUCTURE
+----------------------
+supplement/
+    S-8/
+        S8_readme.txt
+        S8_null_histograms.txt
+        S8_null_samples_summary.csv
+        sensitivity_table_p85_90_95.csv
+        S8_injection_power_curves.txt
+        S8_stability_matrix.txt
+        S8_methods_equations.txt
+        S8_run_commands.txt
+        S8_null_histograms_preview.txt   (optional)
+        manifest_checksums.txt           (recommended)
+
+appendices/
+    Appendix_I.txt
+
+data/
+    null_samples.csv
+    sensitivity_full_p85.csv
+    sensitivity_full_p90.csv
+    sensitivity_full_p95.csv
+    appendix_I_parameters.csv
+
+scripts/
+    null_export_direct.py
+    generate_S8_texts.py
+    assemble_appendix_I.py
+    assemble_S8_final.ps1
+    verify_s8_outputs.ps1
+
+analysis_scripts/
+    compute_overlap_table.py
+    permutation_label_shuffle.py
+    bootstrap_cliffs_delta.py
+    sensitivity_analysis.py
+    README.md
+
+motif_results_robustness/
+    peripheral_85/
+    peripheral_90/
+    peripheral_95/   (merged with peripheral_95_B1000 if present)
+
+
+2. CANONICAL INPUT FILES
+------------------------
+These files are required to regenerate Appendix I and Supplement S-8.
+
+data/null_samples.csv
+    5,000 null permutations; basis for null quantiles and histograms.
+
+data/sensitivity_full_p85.csv
+data/sensitivity_full_p90.csv
+data/sensitivity_full_p95.csv
+    Sensitivity tables for p = 85, 90, 95.
+
+data/appendix_I_parameters.csv
+    Contains m0, s0, and motif-level null quantiles used in Appendix I.
+
+
+3. CORE SCRIPTS USED
+--------------------
+
+Python Scripts:
+    scripts/null_export_direct.py
+        Robust exporter; reads null_samples_summary.npy and writes per-candidate
+        CSVs and S8_null_samples_summary.csv.
+
+    scripts/generate_S8_texts.py
+        Generates S8_null_histograms.txt, sensitivity_table_p85_90_95.csv,
+        and S8_readme.txt.
+
+    scripts/assemble_appendix_I.py
+        Builds Appendix I text from parameter tables and equations.
+
+PowerShell Orchestration:
+    scripts/assemble_S8_final.ps1
+        Discovers run folders, merges outputs, and assembles supplement/S-8 files.
+
+    scripts/verify_s8_outputs.ps1
+        Optional validation of file presence, timestamps, and line counts.
+
+Analysis Scripts (used for diagnostic tables and figures):
+    analysis_scripts/compute_overlap_table.py
+    analysis_scripts/permutation_label_shuffle.py
+    analysis_scripts/bootstrap_cliffs_delta.py
+    analysis_scripts/sensitivity_analysis.py
+
+
+4. FINAL OUTPUT ARTIFACTS
+-------------------------
+
+Appendix I:
+    appendices/Appendix_I.txt
+        Final formatted Appendix I text block.
+
+Supplement S-8:
+    supplement/S-8/S8_readme.txt
+    supplement/S-8/S8_null_histograms.txt
+    supplement/S-8/S8_null_samples_summary.csv
+    supplement/S-8/sensitivity_table_p85_90_95.csv
+    supplement/S-8/S8_injection_power_curves.txt
+    supplement/S-8/S8_stability_matrix.txt
+    supplement/S-8/S8_methods_equations.txt
+    supplement/S-8/S8_run_commands.txt
+    supplement/S-8/S8_null_histograms_preview.txt   (optional)
+    supplement/S-8/manifest_checksums.txt           (recommended)
+
+
+5. DIAGNOSTIC RUN FOLDERS (INTERNAL PROVENANCE)
+-----------------------------------------------
+These folders contain per-run canonical copies of raw and intermediate files.
+
+motif_results_robustness/peripheral_85/
+motif_results_robustness/peripheral_90/
+motif_results_robustness/peripheral_95/
+    Contents may include:
+        motif_candidates_test.csv
+        meta.json
+        null_samples_candidate_<id>.csv
+        null_hist_label_<id>.png (optional)
+        run_manifest.json or run.log
+
+Note:
+    peripheral_95_B1000 was merged into peripheral_95 during assembly.
+
+
+6. STATISTICAL / DIAGNOSTIC OUTPUTS
+-----------------------------------
+These files are produced by the S-8 analysis pipeline.
+
+metric_rule_overlap_table.csv
+tautological_contrasts.csv
+contrast_permutation_pvals.csv
+cliffs_delta_bootstrap_CIs.csv
+sensitivity_no_rule_features.csv
+figures/effect_sizes_with_bootstrap_CIs.png
+figures/effect_sizes_no_rule_features.png
+
+
+7. EXACT COMMANDS USED DURING ASSEMBLY
+--------------------------------------
+
+# Export null samples for each run (example p=85)
+python "C:\Users\ctint\Desktop\Scripts\repo_candidate\null_export_direct.py" ^
+  --npy "C:\Users\ctint\Desktop\Scripts\motif_results_robustness\peripheral_85\null_samples_summary.npy" ^
+  --outdir "C:\Users\ctint\Desktop\Scripts\motif_results_robustness\peripheral_85" ^
+  --run_p 85 --B 1000
+
+# Assemble S-8 files (PowerShell)
+Set-Location "C:\Users\ctint\Desktop\Scripts\repo_candidate"
+.\assemble_S8_final.ps1
+
+# Generate textual S-8 artifacts (Python)
+Set-Location "C:\Users\ctint\Desktop\Scripts\repo_candidate"
+python generate_S8_texts.py
+
+# If merging peripheral_95_B1000 into peripheral_95 was needed
+Copy-Item "C:\Users\ctint\Desktop\Scripts\motif_results_robustness\peripheral_95_B1000\*" `
+  -Destination "C:\Users\ctint\Desktop\Scripts\motif_results_robustness\peripheral_95" `
+  -Recurse -Force -Verbose
+
+
+8. PARAMETERS AND SEEDS (RECORDED IN meta.json)
+-----------------------------------------------
+permutation label-shuffle replicates: 10000
+bootstrap replicates: 5000
+radial-preserving null replicates (B): 1000
+random seeds:
+    42 (diagnostic runs)
+    123 (injection trials)
+    20260218 (bootstrap seed used in S-8 pipeline)
+
+
+9. SENSITIVITY ANALYSIS SUMMARY
+-------------------------------
+DBSCAN parameters:
+    eps = 0.5
+    min_samples = 5
+
+Peripheral definition:
+    Points with Euclidean radius >= p-th percentile.
+
+Sensitivity runs:
+    p = 85, 90, 95 (each with B = 1000)
+
+Evidence files:
+    supplement/S-8/sensitivity_table_p85_90_95.csv
+    supplement/S-8/S8_null_samples_summary.csv
+
+Conclusion:
+    Motif detection at p=95 is consistent with p=85 and p=90.
+
+
+10. REPRODUCIBILITY NOTES
+-------------------------
+- All scripts are deterministic given the provided inputs.
+- CSVs use UTF-8 encoding and LF line endings.
+- Replace any placeholders (e.g., m0, s0, <null_*_k>) before finalizing.
+- Add provenance headers to each S-8 file.
+- Include requirements.txt and meta.json in each run folder.
+- Confirm canonical folder names before committing.
+
+
+End of manifest

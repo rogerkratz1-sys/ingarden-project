@@ -1,0 +1,62 @@
+Candidate 395260 (p=85)
+Observed cluster density T_obs = 3680329.004887811
+Null summary: null_min = 2009309.2466574772; null_1pct = 2009309.2466574772; null_5pct = 2009309.2466574772; null_25pct = 2009309.2466574772; null_median = 2009309.2466574772; null_75pct = 2009309.2466574772; null_95pct = 2009309.2466574772; null_99pct = 2009309.2466574772; null_max = 2009309.2466574772
+Monte Carlo p = 0.5
+BH_selected = 
+Interpretation: Observed density compared to radial-preserving null for p=85 (B=1000).
+
+---
+Candidate 24749291 (p=85)
+Observed cluster density T_obs = 575057628.2814122
+Null summary: null_min = 1246543283.578803; null_1pct = 1246543283.578803; null_5pct = 1246543283.578803; null_25pct = 1246543283.578803; null_median = 1246543283.578803; null_75pct = 1246543283.578803; null_95pct = 1246543283.578803; null_99pct = 1246543283.578803; null_max = 1246543283.578803
+Monte Carlo p = 1.0
+BH_selected = 
+Interpretation: Observed density compared to radial-preserving null for p=85 (B=1000).
+
+---
+Candidate 375659 (p=90)
+Observed cluster density T_obs = 5400898.4433874665
+Null summary: null_min = 897638.7686193801; null_1pct = 897638.7686193801; null_5pct = 897638.7686193801; null_25pct = 897638.7686193801; null_median = 897638.7686193801; null_75pct = 897638.7686193801; null_95pct = 897638.7686193801; null_99pct = 897638.7686193801; null_max = 897638.7686193801
+Monte Carlo p = 0.5
+BH_selected = 
+Interpretation: Observed density compared to radial-preserving null for p=90 (B=1000).
+
+---
+Candidate 1731794190 (p=90)
+Observed cluster density T_obs = 2754250868.8837876
+Null summary: null_min = 2576225627.9570765; null_1pct = 2576225627.9570765; null_5pct = 2576225627.9570765; null_25pct = 2576225627.9570765; null_median = 2576225627.9570765; null_75pct = 2576225627.9570765; null_95pct = 2576225627.9570765; null_99pct = 2576225627.9570765; null_max = 2576225627.9570765
+Monte Carlo p = 0.5
+BH_selected = 
+Interpretation: Observed density compared to radial-preserving null for p=90 (B=1000).
+
+---
+Candidate 189876 (p=95)
+Observed cluster density T_obs = 371317.231181778
+Null summary: null_min = 132073.4389496775; null_1pct = 132073.4389496775; null_5pct = 132073.4389496775; null_25pct = 132073.4389496775; null_median = 132073.4389496775; null_75pct = 132073.4389496775; null_95pct = 132073.4389496775; null_99pct = 132073.4389496775; null_max = 132073.4389496775
+Monte Carlo p = 0.5
+BH_selected = 
+Interpretation: Observed density compared to radial-preserving null for p=95 (B=1000).
+
+---
+Candidate 2795620313772 (p=95)
+Observed cluster density T_obs = 4027271090267.3027
+Null summary: null_min = 2527328657320.111; null_1pct = 2527328657320.111; null_5pct = 2527328657320.111; null_25pct = 2527328657320.111; null_median = 2527328657320.111; null_75pct = 2527328657320.111; null_95pct = 2527328657320.111; null_99pct = 2527328657320.111; null_max = 2527328657320.111
+Monte Carlo p = 0.5
+BH_selected = 
+Interpretation: Observed density compared to radial-preserving null for p=95 (B=1000).
+
+---
+Candidate 189876 (p=95)
+Observed cluster density T_obs = 371317.231181778
+Null summary: null_min = 132073.4389496775; null_1pct = 132073.4389496775; null_5pct = 132073.4389496775; null_25pct = 132073.4389496775; null_median = 132073.4389496775; null_75pct = 132073.4389496775; null_95pct = 132073.4389496775; null_99pct = 132073.4389496775; null_max = 132073.4389496775
+Monte Carlo p = 0.5
+BH_selected = 
+Interpretation: Observed density compared to radial-preserving null for p=95 (B=1000).
+
+---
+Candidate 2795620313772 (p=95)
+Observed cluster density T_obs = 4027271090267.3027
+Null summary: null_min = 2527328657320.111; null_1pct = 2527328657320.111; null_5pct = 2527328657320.111; null_25pct = 2527328657320.111; null_median = 2527328657320.111; null_75pct = 2527328657320.111; null_95pct = 2527328657320.111; null_99pct = 2527328657320.111; null_max = 2527328657320.111
+Monte Carlo p = 0.5
+BH_selected = 
+Interpretation: Observed density compared to radial-preserving null for p=95 (B=1000).

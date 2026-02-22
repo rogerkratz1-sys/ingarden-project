@@ -1,0 +1,6 @@
+﻿Provenance: assembled_date=2026-02-21, git_commit=, assembler=assemble_S8_final.ps1
+
+Run commands used to produce diagnostics (examples):
+python motif_discovery_test.py --embeddings <path> --outdir <outdir> --peripheral_pct 95 --dbscan_eps 0.5 --dbscan_min_samples 5 --null_method radial_preserve --B 1000 --alpha 0.05 --seed 42
+
+Notes: S8_null_samples_summary.csv files were read from each run folder and used to create the captions and sensitivity table.

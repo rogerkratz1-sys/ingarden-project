@@ -1,0 +1,140 @@
+Appendix I Equations and Parameter Table
+=======================================
+
+Purpose
+-------
+This document provides a plain-text, line-by-line, machine- and human-readable copy of the Appendix I equations and the parameter table used in the Type I error diagnostic. It is intended for inclusion in Supplement S-8 as a text file.
+
+Notation and data
+-----------------
+Let X be the full embedding matrix with shape n x d.
+For row i, x_i denotes the d-dimensional coordinate vector.
+Define the Euclidean radius r_i = || x_i ||_2.
+
+Peripheral set
+--------------
+Let r_(p) denote the p-th percentile of the set { r_i : i = 1..n }.
+Define the peripheral index set:
+  P = { i : r_i >= r_(p) }.
+Let X_P denote the |P| x d matrix of peripheral coordinates.
+
+Clustering and candidate motifs
+-------------------------------
+Apply DBSCAN to X_P with parameters eps (ε) and min_samples (m).
+DBSCAN returns labels l_i in { -1, 0, 1, 2, ... } where -1 denotes noise.
+Each non-noise label k defines a candidate motif:
+  C_k = { i in P : l_i = k }.
+Let n_k = |C_k| denote the number of points in candidate k.
+Let X_{C_k} denote the coordinates of points in C_k.
+
+Test statistic: cluster density
+-------------------------------
+For candidate k compute the cluster density statistic T_k defined as:
+
+  T_k = n_k / A_k
+
+where A_k is the convex-hull area (for d = 2) or convex-hull hypervolume (for d > 2)
+of the points in X_{C_k}. If n_k < 3 or convex hull computation fails, use a small
+positive floor for A_k (e.g., 1e-6) to avoid division by zero.
+
+Null model: radial-preserving resampling
+----------------------------------------
+We generate B null replicates that preserve the marginal radial distribution while
+breaking local spatial structure.
+
+Procedure for one null replicate b:
+  1. Compute radial bins by quantiles of { r_i } (default: 10 bins).
+     Let edges = quantile(r_all, seq(0,1,length = bins+1)).
+  2. For each peripheral point i in P with radius r_i:
+       find bin index b_idx such that edges[b_idx] <= r_i <= edges[b_idx+1].
+       sample uniformly at random a replacement coordinate from the set of all
+       points in X whose radius falls in the same bin.
+  3. The sampled coordinates form X_P^(b), the b-th null replicate.
+
+Monte Carlo testing
+-------------------
+For each candidate k:
+  - Compute observed statistic T_k^obs.
+  - For b = 1..B generate X_P^(b) and compute T_k^(b) using the same local
+    radius heuristic (see Implementation Notes).
+  - Compute the one-sided Monte Carlo p-value:
+
+    p_hat_k = (1 + count{ b : T_k^(b) >= T_k^obs }) / (1 + B)
+
+Multiple testing correction
+---------------------------
+When multiple candidates are tested, control the false discovery rate (FDR)
+using the Benjamini-Hochberg procedure at level alpha. Report raw p_hat_k and
+BH-adjusted decisions (selected / not selected).
+
+Injection (power) test
+----------------------
+To estimate sensitivity, inject synthetic Gaussian clusters into X_P and
+measure detection probability.
+
+Injection procedure (one trial):
+  1. Select a random center c from X_P.
+  2. Generate n_inject points from N(c, sigma^2 I_d) where sigma controls tightness.
+  3. Append injected points to X_P to form X_P^aug.
+  4. Run DBSCAN on X_P^aug with the same eps and min_samples.
+  5. Consider the injected points detected if a DBSCAN cluster contains at least
+     threshold_overlap injected points (default threshold_overlap = max(1, n_inject/5)).
+Repeat for trials and report detection_rate = mean(detected).
+
+Stability test
+--------------
+Assess cluster membership stability by jittering X_P and re-running DBSCAN.
+
+Stability procedure:
+  1. For each seed s in seeds:
+       generate jitter = small_sigma * Normal(0,1) of same shape as X_P.
+       X_P^s = X_P + jitter.
+       Run DBSCAN on X_P^s and record membership sets for each label.
+  2. For each cluster in the base run compute mean Jaccard overlap with best-matching
+     clusters across other seeds:
+       Jaccard(A,B) = |A ∩ B| / |A ∪ B|
+  3. Report mean Jaccard per candidate.
+
+Implementation notes
+--------------------
+- Convex hull: use scipy.spatial.ConvexHull for d <= 3. For higher d, either use
+  the hull volume if computationally feasible or project to 2D via PCA and compute
+  convex hull area in the 2D projection as an approximation.
+- Local radius heuristic for null statistics: to avoid re-clustering each null,
+  compute for each candidate the distance r_k from the candidate center to its
+  n_k-th nearest neighbor in the null sample and use the count within r_k divided
+  by convex area as the null statistic.
+- Monte Carlo replicates: recommended B >= 1000 for stable p-value estimation.
+- Random seeds: set reproducible seeds for all RNGs and vary seeds across replicates.
+
+Parameter table (values used in reported runs)
+----------------------------------------------
+Parameter                     | Symbol / name                | Value used in reported runs
+----------------------------- | ---------------------------- | ---------------------------
+Peripheral percentile         | p                            | 90
+DBSCAN eps                    | eps (ε)                      | 0.5
+DBSCAN min_samples            | m                            | 5
+Null replicates               | B                            | 1000
+Radial bins                   | bins                         | 10
+Injection cluster size        | n_inject                     | 50
+Injection trials              | inject_trials                | 50
+BH FDR level                  | alpha                        | 0.05
+Stability seeds               | seeds                        | seed, seed+1, ..., seed+S-1
+Convex hull floor (if needed) | A_floor                      | 1e-6
+
+Reproducible command line
+-------------------------
+Example command used to run the diagnostic (absolute paths shown as example):
+
+python motif_discovery_test.py --embeddings C:\Users\ctint\Desktop\Scripts\embeddings_5000_dim8.csv --outdir C:\Users\ctint\Desktop\Scripts\motif_results --peripheral_pct 90 --dbscan_eps 0.5 --dbscan_min_samples 5 --null_method radial_preserve --B 1000 --alpha 0.05 --seed 42
+
+Notes on interpretation
+-----------------------
+- A large p_hat_k (e.g., p >= 0.05) indicates the candidate's density is compatible
+  with the null; it is not evidence of a motif.
+- BH selection = TRUE indicates the candidate survives FDR correction at level alpha.
+- Injection detection_rate near 1.0 indicates high sensitivity for clusters of the
+  specified size and tightness.
+- Stability Jaccard near 1.0 indicates membership is robust to small perturbations.
+
+End of S8_methods_equations.txt
