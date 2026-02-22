@@ -1,37 +1,37 @@
 ﻿{
-  "git_commit": "REPLACE_WITH_COMMIT_HASH",
-  "repo_url": "https://github.com/rogerkratz1-sys/ingarden-project",
-  "peripheral_pct": 95,
-  "B": 1000,
-  "seed": 42,
-  "clustering_method": "DBSCAN",
-  "clustering_params": {
-    "eps": 0.5,
-    "min_samples": 5,
-    "metric": "euclidean"
-  },
-  "area_estimation": {
-    "method": "convex_hull",
-    "pca_fallback_min_points": 3,
-    "hull_buffer_epsilon": 1e-6
-  },
-  "null_resampling": {
-    "method": "radial_preserve_random_angle",
-    "preserve_ranks": true,
-    "angle_sampling": "uniform"
-  },
-  "files_used": {
-    "embedding": "data/embedding.npy",
-    "centroid": "data/embedding_centroid.json",
-    "clustering_config": "config/clustering_params.json"
-  },
-  "outputs": {
-    "clusters_csv": "motif_results_robustness/peripheral_95/clusters.csv",
-    "null_samples": "motif_results_robustness/peripheral_95/null_samples.npy",
-    "null_summary": "motif_results_robustness/peripheral_95/null_summary.csv",
-    "candidates": "motif_results_robustness/peripheral_95/candidates.csv",
-    "run_manifest": "motif_results_robustness/peripheral_95/run_manifest.json"
-  },
-  "timestamp": "2026-02-22T00:00:00Z",
-  "notes": "Replace placeholders with exact values before publishing."
+    "git_commit":  "bb1f1b38d9c01e3900510d2630ffca28220ecb0c",
+    "repo_url":  "https://github.com/rogerkratz1-sys/ingarden-project",
+    "peripheral_pct":  95,
+    "B":  1000,
+    "seed":  42,
+    "clustering_method":  "DBSCAN",
+    "clustering_params":  {
+                              "eps":  0.5,
+                              "min_samples":  5,
+                              "metric":  "euclidean"
+                          },
+    "area_estimation":  {
+                            "method":  "convex_hull",
+                            "pca_fallback_min_points":  3,
+                            "hull_buffer_epsilon":  1E-06
+                        },
+    "null_resampling":  {
+                            "method":  "radial_preserve_random_angle",
+                            "preserve_ranks":  true,
+                            "angle_sampling":  "uniform"
+                        },
+    "files_used":  {
+                       "embedding":  "data/embedding.npy",
+                       "centroid":  "data/embedding_centroid.json",
+                       "clustering_config":  "config/clustering_params.json"
+                   },
+    "outputs":  {
+                    "clusters_csv":  "motif_results_robustness/peripheral_95/clusters.csv",
+                    "null_samples":  "motif_results_robustness/peripheral_95/null_samples.npy",
+                    "null_summary":  "motif_results_robustness/peripheral_95/null_summary.csv",
+                    "candidates":  "motif_results_robustness/peripheral_95/candidates.csv",
+                    "run_manifest":  "motif_results_robustness/peripheral_95/run_manifest.json"
+                },
+    "timestamp":  "2026-02-22T00:00:00Z",
+    "notes":  "Replace placeholders with exact values before publishing."
 }
