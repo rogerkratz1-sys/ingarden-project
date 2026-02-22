@@ -1,0 +1,4 @@
+﻿metric,tautology_flag,notes
+T_obs,No,Test metric for sensitivity analysis
+n_points,No,Number of points in cluster
+A_k,No,Estimated cluster area
