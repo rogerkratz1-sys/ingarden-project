@@ -1,3 +1,5 @@
+# Provenance: run_date=2026-02-23T01:13:04.858557Z git_commit=c848471 command=motif_discovery_test.py --B 1000 --null_method radial_preserve
+
 ﻿Provenance: assembled_date=2026-02-21, git_commit=, assembler=assemble_S8_final.ps1
 
 Run commands used to produce diagnostics (examples):

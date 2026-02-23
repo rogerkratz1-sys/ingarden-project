@@ -1,3 +1,5 @@
+# Provenance: run_date=2026-02-23T01:13:04.858557Z git_commit=c848471 command=motif_discovery_test.py --B 1000 --null_method radial_preserve
+
 Candidate 395260 (p=85)
 Observed cluster density T_obs = 3680329.004887811
 Null summary: null_min = 2009309.2466574772; null_1pct = 2009309.2466574772; null_5pct = 2009309.2466574772; null_25pct = 2009309.2466574772; null_median = 2009309.2466574772; null_75pct = 2009309.2466574772; null_95pct = 2009309.2466574772; null_99pct = 2009309.2466574772; null_max = 2009309.2466574772
