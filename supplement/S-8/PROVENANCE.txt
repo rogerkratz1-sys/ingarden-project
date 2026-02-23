@@ -1,0 +1,7 @@
+﻿run_date: 2026-02-22T18:03:36.4867432-08:00
+fill_commit: 0a834b8
+provenance_commit: 5811af0
+commands:
+  - python motif_discovery_test.py --embeddings data/embedding.csv --outdir motif_results_robustness/peripheral_85_regen_final --peripheral_pct 85 --null_method radial_preserve --B 1000 --seed 42
+  - python motif_discovery_test.py --embeddings data/embedding.csv --outdir motif_results_robustness/peripheral_90_regen_final --peripheral_pct 90 --null_method radial_preserve --B 1000 --seed 42
+  - python motif_discovery_test.py --embeddings data/embedding.csv --outdir motif_results_robustness/peripheral_95_regen_final --peripheral_pct 95 --null_method radial_preserve --B 1000 --seed 42
