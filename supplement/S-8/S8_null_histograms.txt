@@ -1,4 +1,4 @@
-# Provenance: run_date=2026-02-23T01:13:04.858557Z git_commit=c848471 command=motif_discovery_test.py --B 1000 --null_method radial_preserve
+﻿# Provenance: run_date=2026-02-22T18:01:07.1806247-08:00 git_commit=0a834b8 command=motif_discovery_test.py --null_method radial_preserve --B 1000 --seed 42
 
 Candidate 395260 (p=85)
 Observed cluster density T_obs = 3680329.004887811
@@ -62,3 +62,4 @@ Null summary: null_min = 2527328657320.111; null_1pct = 2527328657320.111; null_
 Monte Carlo p = 0.5
 BH_selected = 
 Interpretation: Observed density compared to radial-preserving null for p=95 (B=1000).
+

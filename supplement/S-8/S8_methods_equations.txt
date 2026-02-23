@@ -1,4 +1,4 @@
-Appendix I Equations and Parameter Table
+﻿Appendix I Equations and Parameter Table
 =======================================
 
 Purpose
