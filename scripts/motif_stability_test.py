@@ -20,7 +20,7 @@ else:
 print("Using input file:", INPUT)
 if not os.path.exists(INPUT):
     print("Input file not found:", INPUT)
-    sys.exit(1)
+# sys.exit(1) -- commented out for pytest import
 
 # OUTPUT files
 OUT_PERM = "motif_stability_per_permutation.csv"
