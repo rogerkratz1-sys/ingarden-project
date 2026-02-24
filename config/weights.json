@@ -1,0 +1,8 @@
+{
+  "speech_gap": 10,
+  "scene_span": 5,
+  "span_excess": 5,
+  "disp_sum": 2,
+  "disp_excess": 2,
+  "temporal_violations": 500
+}

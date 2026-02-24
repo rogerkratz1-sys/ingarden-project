@@ -1,0 +1,23 @@
+{
+  "kappa": 1.2,
+  "alpha": 0.0001,
+  "anchors": [
+    1,
+    8,
+    12
+  ],
+  "anchor_radius": 2,
+  "GD_dK": 0.7,
+  "GD_disp": 200.0,
+  "BRE_block": 3,
+  "BRE_anchor": 0.66,
+  "BRE_disp_min": 20.0,
+  "APD_anchor": 0.66,
+  "APD_dK_low": 0.1,
+  "APD_dK_high": 0.4,
+  "FMEM_single": 4,
+  "DCO_dual": 0.25,
+  "DCO_score": 0.5,
+  "stability_threshold": 0.8,
+  "weights": "config/weights.json"
+}
