@@ -1,1 +1,5 @@
+﻿# Track large CSVs and numpy arrays with Git LFS
+motif_results_robustness/peripheral_95/null_samples_candidate_*.csv filter=lfs diff=lfs merge=lfs -text
+data/embeddings_5000_dim8.csv filter=lfs diff=lfs merge=lfs -text
+*.npy filter=lfs diff=lfs merge=lfs -text
 supplement/S-8/stability_map.csv filter=lfs diff=lfs merge=lfs -text
