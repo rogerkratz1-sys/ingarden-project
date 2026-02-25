@@ -1,3 +1,7 @@
+﻿# run_date: 2026-02-22T00:00:00Z
+# git_commit: bb1f1b38d9c01e3900510d2630ffca28220ecb0c
+# command: python motif_discovery_test.py --embeddings "C:\Users\ctint\Desktop\Scripts\embeddings_5000_dim8.csv" --outdir "motif_results_robustness/peripheral_95" --peripheral_pct 95 --dbscan_eps 0.5 --dbscan_min_samples 5 --null_method radial_preserve --B 1000 --alpha 0.05 --seed 42
+
 cluster_id,n_k,T_obs,hat_p,q_value
 0,1,0.7058823529411765,1.0,1.0
 0,0,0.5294117647058824,1.0,1.0

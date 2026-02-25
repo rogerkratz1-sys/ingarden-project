@@ -1,0 +1,9 @@
+﻿{
+  "max_block_move": 5,
+  "disp_kappa_scaled": 1000,
+  "adjacency_violations": 5,
+  "dK": 0.6,
+  "order_dual_proximity": 0.5,
+  "single_move": 1,
+  "score_dir": 0.0
+}

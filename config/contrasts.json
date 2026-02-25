@@ -1,1 +1,1 @@
-﻿{"contrasts":[{"name":"all_vs_rest","groups":["candidate_0","candidate_1"]}]}
+﻿{ "contrasts": [ { "name": "all_vs_rest", "groups": ["0","1"] } ] }
